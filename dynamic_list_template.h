@@ -5,12 +5,6 @@
 
 // MACRO_DEFINE define_dyn_list(chosen_type, prefix)
 
-#ifndef DUMMY_TYPE
-typedef float* dummy_type; // DUMMY_TYPE_DECLARATION
-#else
-typedef DUMMY_TYPE dummy_type;
-#endif
-
 /* header */
 
 struct prefix_dyn_list;

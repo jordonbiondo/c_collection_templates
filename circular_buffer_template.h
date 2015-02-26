@@ -5,16 +5,10 @@
 
 // MACRO_DEFINE  define_circular_buffer(dummy_type, prefix, element_destroyer)
 
-#ifndef DUMMY_TYPE
-typedef float* dummy_type; // DUMMY_TYPE_DECLARATION
-#else
-typedef DUMMY_TYPE dummy_type;
-#endif
-
 /* header */
 
 struct prefix_cb;
-struct prefix_cb * prefi_cb_create(unsigned long capacity, dummy_type default_value);
+struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_value);
 void prefix_cb_destroy(struct prefix_cb* buffer, void(*element_destroyer)(dummy_type));
 bool prefix_cb_isempty(struct prefix_cb* buffer);
 bool prefix_cb_isfull(struct prefix_cb* buffer);
