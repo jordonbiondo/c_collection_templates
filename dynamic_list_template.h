@@ -13,6 +13,8 @@ typedef float* dummy_type; // DUMMY_TYPE_DECLARATION
 typedef DUMMY_TYPE dummy_type;
 #endif
 
+/* header */
+
 struct prefix_dyn_list;
 struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity);
 void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type));
@@ -30,6 +32,10 @@ void prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocat
 void prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size);
 void prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
 
+/* end header */
+
+/* implementation */
+
 struct prefix_dyn_list {
   unsigned long size;
   dummy_type* data;
@@ -38,9 +44,6 @@ struct prefix_dyn_list {
   } private;
 };
 
-/**
- * Somedocs
- */
 struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity) {
   struct prefix_dyn_list* list = malloc(sizeof(struct prefix_dyn_list));
   if (!initial_capacity) {
@@ -124,6 +127,10 @@ void prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocat
   prefix__private_dyn_list_grow_internal(list, new_size);
 }
 
+/* end implementation */
+
+/* private */
+
 void prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size) {
   dummy_type* new_data = realloc(list->data, sizeof(dummy_type) * new_size);
   list->data = new_data;
@@ -135,5 +142,6 @@ void prefix__private_dyn_list_grow(struct prefix_dyn_list* list) {
   prefix__private_dyn_list_grow_internal(list, new_size);
 }
 
+/* end private */
 
 #endif
