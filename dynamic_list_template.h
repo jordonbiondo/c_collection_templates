@@ -37,13 +37,13 @@ struct prefix_dyn_list {
 };
 
 struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity) {
-  struct prefix_dyn_list* list = malloc(sizeof(struct prefix_dyn_list));
+  struct prefix_dyn_list* list = cct_alloc(struct prefix_dyn_list, 1);
   if (!initial_capacity) {
     initial_capacity = 10;
   }
   list->private.real_size = initial_capacity;
   list->size = 0;
-  list->data = malloc(sizeof(dummy_type) * initial_capacity);
+  list->data = cct_alloc(dummy_type, initial_capacity);
   return list;
 }
 

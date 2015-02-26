@@ -33,7 +33,7 @@ struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_v
   struct prefix_cb* buffer = cct_alloc(struct prefix_cb, 1);
   buffer->capacity = capacity;
   buffer->default_value = default_value;
-  buffer->values = malloc(sizeof(dummy_type) * capacity);
+  buffer->values = cct_alloc(dummy_type, capacity);
   buffer->get_position = 0;
   buffer->put_position = 0;
   buffer->population = 0;
