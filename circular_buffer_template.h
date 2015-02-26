@@ -13,13 +13,20 @@ typedef float* dummy_type; // DUMMY_TYPE_DECLARATION
 typedef DUMMY_TYPE dummy_type;
 #endif
 
-struct prefixcb * prefixcb_create(unsigned long capacity, dummy_type default_value);
-void prefixcb_destroy(struct prefixcb *);
-bool prefixcb_isempty(struct prefixcb *);
-bool prefixcb_isfull(struct prefixcb *);
-bool prefixcb_put(struct prefixcb *, dummy_type);
-dummy_type prefixcb_get(struct prefixcb *);
-unsigned long prefixcb_capacity(struct prefixcb *);
+/* header */
+
+struct prefix_cb;
+struct prefix_cb * prefi_cb_create(unsigned long capacity, dummy_type default_value);
+void prefix_cb_destroy(struct prefix_cb* buffer, void(*element_destroyer)(dummy_type));
+bool prefix_cb_isempty(struct prefix_cb* buffer);
+bool prefix_cb_isfull(struct prefix_cb* buffer);
+bool prefix_cb_put(struct prefix_cb* buffer, dummy_type value);
+dummy_type prefix_cb_get(struct prefix_cb* buffer);
+unsigned long prefix_cb_capacity(struct prefix_cb* buffer);
+
+/* end header */
+
+/* implementation */
 
 struct prefix_cb {
   unsigned long capacity;
@@ -91,5 +98,10 @@ unsigned long prefix_cb_capacity(struct prefix_cb * buffer) {
   return buffer->capacity;
 }
 
+/* end implementation */
+
+/* private */
+
+/* end private */
 
 #endif
