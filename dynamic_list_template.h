@@ -136,4 +136,6 @@ void prefix__private_dyn_list_grow(struct prefix_dyn_list* list) {
 
 /* end private */
 
+// MACRO_END
+
 #endif

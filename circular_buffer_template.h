@@ -3,7 +3,7 @@
 
 #include "cct_common_includes.h"
 
-// MACRO_DEFINE  define_circular_buffer(dummy_type, prefix, element_destroyer)
+// MACRO_DEFINE  define_circular_buffer(chosen_type, prefix)
 
 /* header */
 
@@ -95,5 +95,7 @@ unsigned long prefix_cb_capacity(struct prefix_cb * buffer) {
 /* private */
 
 /* end private */
+
+// MACRO_END
 
 #endif
