@@ -1,9 +1,7 @@
 #ifndef DYNAMIC_LIST_TEMPLATE_H
 #define DYNAMIC_LIST_TEMPLATE_H
 
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
+#include "cct_common_includes.h"
 
 // MACRO_DEFINE define_dyn_list(chosen_type, prefix)
 

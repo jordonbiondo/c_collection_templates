@@ -1,9 +1,7 @@
 #ifndef CIRCULAR_BUFFER_TEMPLATE_H
 #define CIRCULAR_BUFFER_TEMPLATE_H
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
+#include "cct_common_includes.h"
 
 // MACRO_DEFINE  define_circular_buffer(dummy_type, prefix, element_destroyer)
 
