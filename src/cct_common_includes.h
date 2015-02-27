@@ -24,7 +24,9 @@
 #define cct_alloc(type, count) ((type*)(malloc(sizeof(type) * (count))))
 
 #ifndef CCT_DUMMY_TYPE
-typedef float* dummy_type; // DUMMY_TYPE_DECLARATION
+/* Internal doc specific type, ignore.
+ */
+typedef int* dummy_type; // DUMMY_TYPE_DECLARATION
 #else
 typedef DUMMY_TYPE dummy_type;
 #endif
