@@ -1,4 +1,4 @@
-collection_templates.h: src/*.h
+collection_templates.h: src/*.h build.sh
 	./build.sh
 
 docs: collection_templates.h
