@@ -20,7 +20,7 @@
 #include "lib/greatest.h"
 #include "../collection_templates.h"
 
-define_circular_buffer(int, test);
+define_circular_buffer(int, test)
 
 TEST cbuffer_create_test() {
   SKIP();

@@ -20,7 +20,7 @@
 #include "lib/greatest.h"
 #include "../collection_templates.h"
 
-define_dyn_list(int, test);
+define_dyn_list(int, test)
 
 TEST dyn_list_create_test() {
   SKIP();
