@@ -6,7 +6,6 @@ templates=(src/dynamic_list_template.h src/circular_buffer_template.h)
 
 function start () {
     echo > $output
-    include_common
 }
 
 function include_common () {
