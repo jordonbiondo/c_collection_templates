@@ -20,22 +20,77 @@
 #include "lib/greatest.h"
 #include "../collection_templates.h"
 
-define_linked_list(int, test);
+bool spoof_oom = false;
+
+#ifdef cct_alloc
+#undef cct_alloc
+#define cct_alloc(type, count) ((spoof_oom) ? NULL : ((type*)(malloc(sizeof(type) * (count)))))
+#endif
+
+#define with_spoofed_oom for(spoof_oom = true; spoof_oom; spoof_oom = false)
+
+define_linked_list(int, test)
+
+typedef struct test_linked_list ill;
 
 TEST linked_list_create_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  ASSERTm("New list is not null.", list != NULL);
+  with_spoofed_oom {
+    ill* list2 = test_linked_list_create();
+    ASSERTm("New list is null if allocation fails", list2 == NULL);
+  }
+  ASSERTm("New list has size 0", list->private.size == 0);
+  test_linked_list_destroy(list, NULL);
+  PASS();
+}
+
+int destroy_test_value = 0;
+void my_int_destroyer(int x) {
+  destroy_test_value += x;
 }
 
 TEST linked_list_destroy_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+
+  destroy_test_value = 0;
+  test_linked_list_push(list, 1);
+  test_linked_list_push(list, 10);
+  test_linked_list_push(list, 100);
+  test_linked_list_push(list, 1000);
+  test_linked_list_destroy(list, my_int_destroyer);
+  ASSERTm("destroyer method called for each element.", destroy_test_value == 1111);
+  destroy_test_value = 0;
+  PASS();
 }
 
 TEST linked_list_length_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  ASSERT(test_linked_list_length(list) == 0);
+  test_linked_list_push(list, 1);
+  test_linked_list_push(list, 1);
+  ASSERT(test_linked_list_length(list) == 2);
+  test_linked_list_insert(list, 1, 1);
+  ASSERT(test_linked_list_length(list) == 3);
+  test_linked_list_remove(list, 0);
+  ASSERT(test_linked_list_length(list) == 2);
+  test_linked_list_destroy(list, my_int_destroyer);
+  PASS();
 }
 
 TEST linked_list_empty_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  ASSERT(test_linked_list_empty(list));
+  test_linked_list_push(list, 1);
+  ASSERT(!test_linked_list_empty(list));
+  test_linked_list_push(list, 1);
+  ASSERT(!test_linked_list_empty(list));
+  test_linked_list_pop(list);
+  ASSERT(!test_linked_list_empty(list));
+  test_linked_list_pop(list);
+  ASSERT(test_linked_list_empty(list));
+  test_linked_list_destroy(list, my_int_destroyer);
+  PASS();
 }
 
 TEST linked_list_get_test () {
