@@ -1,0 +1,52 @@
+* C Collection Templates
+  A collection of macros that can be used to define entire collection types and functions
+
+  For instance, =define_dyn_list(int, cool_int)= would define functions and types for a dynamically allocated int list. All dynamic int list specific types and functions would be prefixed with cool_int so you could use the macro over and over for lots of different types.
+** Currently Implemented Collections
+   - Dynamic List (ArrayList)
+   - Circular Buffer
+
+** Usage
+   1. run make to build =collection_templates.h=
+   2. use =collection_templates.h= in your project:
+#+BEGIN_SRC c
+  #include "collection_templates.h"
+
+  define_dyn_list(int, int);
+
+  int main (void) {
+    struct int_dyn_list* list =  int_dyn_list_create(0);
+
+    for (int i = 0; i < 2000; i++) {
+      int_dyn_list_add(list, i);
+    }
+
+    for (int i = 0; i < 1000; i++) {
+      int_dyn_list_remove(list, 0);
+    }
+
+    int_dyn_list_destroy(list, NULL);
+  }
+
+#+END_SRC
+
+** Documentation
+   Documentation can be generated with =make docs=, (requires cldoc)
+
+   Host the docs locally with =make serve_docs=
+
+   Each collection is documented once generically and not for a certain type or prefix.
+   For instance, if you are using a dynamic list of ints with a prefix of =my= like this:
+   #+BEGIN_SRC C
+     define_dyn_list(int, my);
+   #+END_SRC
+   The generated function for adding values to this type of list would look like this:
+   #+BEGIN_SRC C
+   bool my_dyn_list_add(struct my_dyn_list* list, int value)
+   #+END_SRC
+   however, the documentation will look ike this:
+   #+BEGIN_SRC C
+   bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value)
+   #+END_SRC
+
+   When you look at the docs just replace =prefix= with your given prefix and =dummy_type= with whatever you are using and the docs will apply to any type of dynamic list.
