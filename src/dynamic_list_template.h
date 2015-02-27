@@ -33,6 +33,15 @@ bool prefix_dyn_list_empty(struct prefix_dyn_list* list);
 dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned index);
 dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned index, dummy_type value);
 bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
+
+bool prefix_dyn_list_insert(struct prefix_dyn_list* list, unsigned index, dummy_type value);
+bool prefix_dyn_list_push_front(struct prefix_dyn_list* list, dummy_type value);
+bool prefix_dyn_list_push_back(struct prefix_dyn_list* list, dummy_type value);
+dummy_type prefix_dyn_list_pop_front(struct prefix_dyn_list* list);
+dummy_type prefix_dyn_list_pop_back(struct prefix_dyn_list* list);
+dummy_type prefix_dyn_list_peek_back(struct prefix_dyn_list* list);
+dummy_type prefix_dyn_list_peek_front(struct prefix_dyn_list* list);
+
 long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
 bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
 long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
@@ -114,7 +123,7 @@ bool prefix_dyn_list_empty(struct prefix_dyn_list* list) {
 
 /* Get the value of list at a given index.
  * @index the index at which to retrieve the stored value in list
- * 
+ *
  * Get the value of list at a given index.
  * Does no bound checking, it is your responsibility to ensure index is
  * within the bounds of the list. See also: <prefix_dyn_list_length>
@@ -128,7 +137,7 @@ dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned index) {
 /* Replace the value of list at a given index with a new value;
  * @index the index at which to retrieve the stored value in list
  * @value the value to place at index
- * 
+ *
  * Replace the value of list at a given index.
  * Does no bound checking, it is your responsibility to ensure index is
  * within the bounds of the list. See also: <prefix_dyn_list_length>
@@ -143,22 +152,66 @@ dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned index, dum
 
 /* Append a value to a dynamic list.
  * @value the value to append to the list
- * 
+ *
  * Append a value to a dynamic list.
  * If the list has reached capacity it reallocate itself with more space.
  *
- * @return true if value was added successfully, or false if 
+ * @return true if value was added successfully, or false if
  * allocation was necessary and failed.
  */
 bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value) {
   list->data[list->size] = value;
   list->size++;
   if (list->size == list->private.real_size) {
-    prefix__private_dyn_list_grow(list);
+    return prefix__private_dyn_list_grow(list);
   }
   return true;
 }
 
+bool prefix_dyn_list_insert(struct prefix_dyn_list* list, unsigned index, dummy_type value) {
+  if (index != (list->size - 1)) {
+    memmove(&list->data[index+1], &list->data[index], (sizeof(dummy_type) * (list->size - index)));
+  }
+
+  list->data[index] = value;
+  list->size++;
+
+  if (list->size == list->private.real_size) {
+    return prefix__private_dyn_list_grow(list);
+  }
+
+  return true;
+}
+
+bool prefix_dyn_list_push_front(struct prefix_dyn_list* list, dummy_type value) {
+  return prefix_dyn_list_insert(list, 0, value);
+}
+
+/* Push a value onto the back of the dynamic list
+ * @value the value to append to the list
+ *
+ * Push a value onto the back of the dynamic list
+ * This is just a wrapper for <prefix_dyn_list_add>
+ */
+bool prefix_dyn_list_push_back(struct prefix_dyn_list* list, dummy_type value) {
+  return prefix_dyn_list_add(list, value);
+}
+
+dummy_type prefix_dyn_list_pop_front(struct prefix_dyn_list* list) {
+  return prefix_dyn_list_remove(list, 0);
+}
+
+dummy_type prefix_dyn_list_pop_back(struct prefix_dyn_list* list) {
+  return prefix_dyn_list_remove(list, list->size - 1);
+}
+
+dummy_type prefix_dyn_list_peek_back(struct prefix_dyn_list* list) {
+  return prefix_dyn_list_get(list, list->size - 1);
+}
+
+dummy_type prefix_dyn_list_peek_front(struct prefix_dyn_list* list) {
+  return prefix_dyn_list_get(list, 0);
+}
 
 /* Return the index of the first element in a list == to a given value
  * @value the value to find in the list
@@ -250,7 +303,7 @@ dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index) 
  * Typically a lists capacity will automatically grow by 60% when it becomes full
  * but this can be usefull if you know you are going to be adding large amounts
  * of data and want to minimumize reallocations.
- * 
+ *
  * @return true if allocation succeeds, false if not
  */
 bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase) {
