@@ -1,7 +1,7 @@
 collection_templates.h: src/*.h
 	./build.sh
 
-docs: src/*.h
+docs: collection_templates.h
 	cldoc generate -- --language c --output docs/ src/*
 
 serve_docs:
