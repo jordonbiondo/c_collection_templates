@@ -11,25 +11,23 @@ struct prefix_dyn_list;
 struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity);
 void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type));
 unsigned long prefix_dyn_list_length(struct prefix_dyn_list* list);
-bool prefix_dyn_list_empty(struct prefix_dyn_list* list);
+unsigned long prefix_dyn_list_empty(struct prefix_dyn_list* list);
 dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index);
 dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned long index, dummy_type value);
-bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
+dummy_type prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
 unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
 unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
 dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long index);
+dummy_type prefix_dyn_list_remove_at(struct prefix_dyn_list* list, unsigned long index);
 
-bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase);
-bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size);
-bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
+void prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase);
+void prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size);
+void prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
 
 /* end header */
 
 /* implementation */
 
-/* Struct for a dynamic list
- * @size foobar
- */
 struct prefix_dyn_list {
   unsigned long size;
   dummy_type* data;
@@ -38,34 +36,17 @@ struct prefix_dyn_list {
   } private;
 };
 
-/* Create a new dynamic list for this type.
- * @initial_capacity Initial allocated capacity, pass zero to use the default value.
- *
- * @return a pointer to a new dynamic list or NULL if allocation fails.
- */
 struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity) {
   struct prefix_dyn_list* list = cct_alloc(struct prefix_dyn_list, 1);
-  if (list == NULL) {
-    return NULL;
-  }
   if (!initial_capacity) {
     initial_capacity = 10;
   }
   list->private.real_size = initial_capacity;
   list->size = 0;
   list->data = cct_alloc(dummy_type, initial_capacity);
-  if (list->data == NULL) {
-    return NULL;
-  }
   return list;
 }
 
-/* Free a dynamic list and all of its data.
- * @list The dynamic list to free.
- * @element_destroyer If not NULL, each element of list's data will be passed
- * through this function which you can use free or otherwise cleanup each
- * individual element before its reference is lost.
- */
 void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type)) {
   if (element_destroyer) {
     for (unsigned long i = 0; i < list->size; i++) {
@@ -76,78 +57,35 @@ void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroy
   free(list);
 }
 
-/* The number of elements in list.
- *
- * @return the number of elements in list
- */
 unsigned long prefix_dyn_list_length(struct prefix_dyn_list* list) {
   return list->size;
 }
 
-/* Get whether or not a list is empty.
- *
- * @return true if the list is empty else false.
- */
-bool prefix_dyn_list_empty(struct prefix_dyn_list* list) {
+unsigned long prefix_dyn_list_empty(struct prefix_dyn_list* list) {
   return list->size == 0;
 }
 
-/* Get the value of list at a given index.
- * @index the index at which to retrieve the stored value in list
- * 
- * Get the value of list at a given index.
- * Does no bound checking, it is your responsibility to ensure index is
- * within the bounds of the list. See also: <prefix_dyn_list_length>
- *
- * @return the value of list at index
- */
 dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index) {
-  return list->data[index];
+  /* Actually access outside of the real arrays boundaries if index is not < list->size; */
+  /* spoof a out of bounds error */
+  return list->data[(index < list->size) ? index : list->private.real_size];
 }
 
-/* Replace the value of list at a given index with a new value;
- * @index the index at which to retrieve the stored value in list
- * @value the value to place at index
- * 
- * Replace the value of list at a given index.
- * Does no bound checking, it is your responsibility to ensure index is
- * within the bounds of the list. See also: <prefix_dyn_list_length>
- *
- * @return the previous value at index that has been replaced.
- */
 dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned long index, dummy_type value) {
-  dummy_type previous_value = list->data[index];
-  list->data[index] = value;
-  return previous_value;
+  index = (index < list->size) ? index : list->private.real_size;
+  return list->data[index] = value;
 }
 
-/* Append a value to a dynamic list.
- * @value the value to append to the list
- * 
- * Append a value to a dynamic list.
- * If the list has reached capacity it reallocate itself with more space.
- *
- * @return true if value was added successfully, or false if 
- * allocation was necessary and failed.
- */
-bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value) {
+dummy_type prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value) {
   list->data[list->size] = value;
   list->size++;
   if (list->size == list->private.real_size) {
     prefix__private_dyn_list_grow(list);
   }
-  return true;
+  return value;
 }
 
 
-/* Return the index of the first element in a list == to a given value
- * @value the value to find in the list
- *
- * Return the index of the first element in a list that is == to a given value
- * If == is not sufficient to check for equality use <prefix_dyn_list_index_of_equal>
- *
- * @return the first index of an element == to value in list or -1 if value is not found.
- */
 unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value) {
   for (unsigned long i = 0; i < list->size; i++) {
     if (list->data[i] == value) {
@@ -157,18 +95,6 @@ unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type 
   return -1;
 }
 
-/* Return the index of the first element in a list where a equallity function returns true.
- * @value the value to find in the list
- * @equals a equallity checking function used to check if a value in the list is equal
- * to the given value
- *
- * Return the index of the first element in a list where a equallity function returns true.
- * The function will be called with the given value and each element of the list in order
- * until it returns true to signify the values are equal.
- * If == will be  sufficient to check for equality use <prefix_dyn_list_index_of>
- *
- * @return the first index of an element == to value in list or -1 if value is not found.
- */
 unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
   for (unsigned long i = 0; i < list->size; i++) {
     if (equals(value, list->data[i])) {
@@ -178,63 +104,34 @@ unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy
   return -1;
 }
 
-/* Remove the element of list at an index.
- * @index the index of the element to remove from the list
- *
- * Remove the element of list at an index.
- * Does no bound checking, it is your responsibility to ensure index is
- * within the bounds of the list. See also: <prefix_dyn_list_length>
- * All elements to the right of index are shifted left to fill the whole;
- *
- * @return the value removed from the index
- */
 dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long index) {
+  index = (index < list->size) ? index : list->private.real_size;
   dummy_type removed = list->data[index];
   if (index < (list->size - 1)) {
-    memmove(&list->data[index], &list->data[index+1], (sizeof(dummy_type) * (list->size - index - 1)));
+    memcpy(&list->data[index], &list->data[index+1], (sizeof(dummy_type) * (list->size - index - 1)));
   }
   list->size--;
   return removed;
 }
 
-/* Manually increase a lists allocated capacity.
- * @pre_allocated_size_increase the number of elements to allocate additionally
- * memory for.
- *
- * Manually increase a lists allocated capacity.
- * Typically a lists capacity will automatically grow by 60% when it becomes full
- * but this can be usefull if you know you are going to be adding large amounts
- * of data and want to minimumize reallocations.
- * 
- * @return true if allocation succeeds, false if not
- */
-bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase) {
+void prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase) {
   unsigned long new_size = list->size + pre_allocated_size_increase;
-  return prefix__private_dyn_list_grow_internal(list, new_size);
+  prefix__private_dyn_list_grow_internal(list, new_size);
 }
 
 /* end implementation */
 
 /* private */
 
-/* Internal list growing method, do not use.
- */
-bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size) {
+void prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size) {
   dummy_type* new_data = realloc(list->data, sizeof(dummy_type) * new_size);
-  if (new_data == NULL) {
-    return false;
-  } else {
-    list->data = new_data;
-    list->private.real_size = new_size;
-    return true;
-  }
+  list->data = new_data;
+  list->private.real_size = new_size;
 }
 
-/* Internal list reallocation method, grows a lists capacity by a factor
- */
-bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list) {
-  unsigned long new_size = list->size * 1.6;
-  return prefix__private_dyn_list_grow_internal(list, new_size);
+void prefix__private_dyn_list_grow(struct prefix_dyn_list* list) {
+  unsigned long new_size = list->size * 1.7;
+  prefix__private_dyn_list_grow_internal(list, new_size);
 }
 
 /* end private */
