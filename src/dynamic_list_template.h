@@ -34,7 +34,9 @@ dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index
 dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned long index, dummy_type value);
 bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
 unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
+bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
 unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
+bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
 dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long index);
 
 bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase);
@@ -175,6 +177,18 @@ unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type 
   return -1;
 }
 
+/* Find out if a list contains an element == to a given value.
+ * @value the value to look for in the list
+ *
+ * Find out if a list contains an element == to a given value.
+ * If == is not sufficient to check for equality use <prefix_dyn_list_contains_equal>
+ *
+ * @return true if list contains an element == to the given value
+ */
+bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value) {
+  return prefix_dyn_list_index_of(list, value) > 0;
+}
+
 /* Return the index of the first element in a list where a equallity function returns true.
  * @value the value to find in the list
  * @equals a equallity checking function used to check if a value in the list is equal
@@ -195,6 +209,19 @@ unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy
   }
   return -1;
 }
+
+/* Find out if a list contains an element equal to a given value using a equallity checking function.
+ * @value the value to find in the list
+ *
+ * Find out if a list contains an element such that equals(value, element) returns true
+ * If == is sufficient to check for equality use <prefix_dyn_list_contains>
+ *
+ * @return true if list contains an element such that equals(value, element) returns true.
+ */
+bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+  return prefix_dyn_list_index_of_equal(list, value, equals) > 0;
+}
+
 
 /* Remove the element of list at an index.
  * @index the index of the element to remove from the list
