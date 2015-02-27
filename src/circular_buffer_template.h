@@ -28,10 +28,10 @@
 struct prefix_cb;
 struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_value);
 void prefix_cb_destroy(struct prefix_cb* buffer, void(*element_destroyer)(dummy_type));
-bool prefix_cb_isempty(struct prefix_cb* buffer);
-bool prefix_cb_isfull(struct prefix_cb* buffer);
-bool prefix_cb_put(struct prefix_cb* buffer, dummy_type value);
-dummy_type prefix_cb_get(struct prefix_cb* buffer);
+bool prefix_cb_empty(struct prefix_cb* buffer);
+bool prefix_cb_full(struct prefix_cb* buffer);
+bool prefix_cb_enqeue(struct prefix_cb* buffer, dummy_type value);
+dummy_type prefix_cb_pop(struct prefix_cb* buffer);
 unsigned long prefix_cb_capacity(struct prefix_cb* buffer);
 
 /* end header */
@@ -42,9 +42,11 @@ struct prefix_cb {
   unsigned long capacity;
   dummy_type default_value;
   dummy_type* values;
-  unsigned long put_position;
-  unsigned long get_position;
   unsigned long population;
+  struct {
+    unsigned long put_position;
+    unsigned long get_position;
+  } private;
 };
 
 struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_value) {
@@ -52,8 +54,8 @@ struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_v
   buffer->capacity = capacity;
   buffer->default_value = default_value;
   buffer->values = cct_alloc(dummy_type, capacity);
-  buffer->get_position = 0;
-  buffer->put_position = 0;
+  buffer->private.get_position = 0;
+  buffer->private.put_position = 0;
   buffer->population = 0;
   return buffer;
 }
@@ -68,37 +70,37 @@ void prefix_cb_destroy(struct prefix_cb * buffer, void(*element_destroyer)(dummy
   free(buffer);
 }
 
-bool prefix_cb_isempty(struct prefix_cb * buffer) {
+bool prefix_cb_empty(struct prefix_cb * buffer) {
   return buffer->population == 0;
 }
 
-bool prefix_cb_isfull(struct prefix_cb * buffer) {
+bool prefix_cb_full(struct prefix_cb * buffer) {
   return buffer->population == buffer->capacity;
 }
 
-bool prefix_cb_put(struct prefix_cb * buffer, dummy_type value) {
-  if (prefix_cb_isfull(buffer)) {
+bool prefix_cb_enqueue(struct prefix_cb * buffer, dummy_type value) {
+  if (prefix_cb_full(buffer)) {
     return false;
   } else {
     buffer->population++;
-    buffer->values[buffer->put_position] = value;
-    buffer->put_position++;
-    if (buffer->put_position == buffer->capacity) {
-      buffer->put_position = 0;
+    buffer->values[buffer->private.put_position] = value;
+    buffer->private.put_position++;
+    if (buffer->private.put_position == buffer->capacity) {
+      buffer->private.put_position = 0;
     }
     return true;
   }
 }
 
-dummy_type prefix_cb_get(struct prefix_cb * buffer) {
-  if (prefix_cb_isempty(buffer)) {
+dummy_type prefix_cb_pop(struct prefix_cb * buffer) {
+  if (prefix_cb_empty(buffer)) {
     return buffer->default_value;
   } else {
     buffer->population--;
-    dummy_type output = buffer->values[buffer->get_position];
-    buffer->get_position++;
-    if (buffer->get_position == buffer->capacity) {
-      buffer->get_position = 0;
+    dummy_type output = buffer->values[buffer->private.get_position];
+    buffer->private.get_position++;
+    if (buffer->private.get_position == buffer->capacity) {
+      buffer->private.get_position = 0;
     }
     return output;
   }
