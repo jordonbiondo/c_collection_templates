@@ -5,7 +5,11 @@
 ** Currently Implemented Collections
    - Dynamic List (ArrayList)
    - Circular Buffer
-
+   - Linked List
+** Planned:
+   - Hash Table
+   - Binary Search Tree
+   - Thread-safe versions of each
 ** Usage
    1. run make to build =collection_templates.h=
    2. use =collection_templates.h= in your project:
