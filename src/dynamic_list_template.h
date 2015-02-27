@@ -26,21 +26,21 @@
 /* header */
 
 struct prefix_dyn_list;
-struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity);
+struct prefix_dyn_list* prefix_dyn_list_create(size_t initial_capacity);
 void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type));
-unsigned long prefix_dyn_list_length(struct prefix_dyn_list* list);
+long prefix_dyn_list_length(struct prefix_dyn_list* list);
 bool prefix_dyn_list_empty(struct prefix_dyn_list* list);
-dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index);
-dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned long index, dummy_type value);
+dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned index);
+dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned index, dummy_type value);
 bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
-unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
+long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
 bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
-unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
+long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
 bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
-dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long index);
+dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index);
+bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase);
 
-bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase);
-bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size);
+bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, size_t new_size);
 bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
 
 /* end header */
@@ -51,10 +51,10 @@ bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
  * @size foobar
  */
 struct prefix_dyn_list {
-  unsigned long size;
+  size_t size;
   dummy_type* data;
   struct prefix_dyn_list_private_data {
-    unsigned long real_size;
+    size_t real_size;
   } private;
 };
 
@@ -63,7 +63,7 @@ struct prefix_dyn_list {
  *
  * @return a pointer to a new dynamic list or NULL if allocation fails.
  */
-struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity) {
+struct prefix_dyn_list* prefix_dyn_list_create(size_t initial_capacity) {
   struct prefix_dyn_list* list = cct_alloc(struct prefix_dyn_list, 1);
   if (list == NULL) {
     return NULL;
@@ -88,7 +88,7 @@ struct prefix_dyn_list* prefix_dyn_list_create(unsigned long initial_capacity) {
  */
 void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type)) {
   if (element_destroyer) {
-    for (unsigned long i = 0; i < list->size; i++) {
+    for (size_t i = 0; i < list->size; i++) {
       element_destroyer(list->data[i]);
     }
   }
@@ -100,7 +100,7 @@ void prefix_dyn_list_destroy(struct prefix_dyn_list* list, void(*element_destroy
  *
  * @return the number of elements in list
  */
-unsigned long prefix_dyn_list_length(struct prefix_dyn_list* list) {
+long prefix_dyn_list_length(struct prefix_dyn_list* list) {
   return list->size;
 }
 
@@ -121,7 +121,7 @@ bool prefix_dyn_list_empty(struct prefix_dyn_list* list) {
  *
  * @return the value of list at index
  */
-dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index) {
+dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned index) {
   return list->data[index];
 }
 
@@ -135,7 +135,7 @@ dummy_type prefix_dyn_list_get(struct prefix_dyn_list* list, unsigned long index
  *
  * @return the previous value at index that has been replaced.
  */
-dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned long index, dummy_type value) {
+dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned index, dummy_type value) {
   dummy_type previous_value = list->data[index];
   list->data[index] = value;
   return previous_value;
@@ -168,8 +168,8 @@ bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value) {
  *
  * @return the first index of an element == to value in list or -1 if value is not found.
  */
-unsigned long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value) {
-  for (unsigned long i = 0; i < list->size; i++) {
+long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value) {
+  for (size_t i = 0; i < list->size; i++) {
     if (list->data[i] == value) {
       return i;
     }
@@ -201,8 +201,8 @@ bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value) {
  *
  * @return the first index of an element == to value in list or -1 if value is not found.
  */
-unsigned long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
-  for (unsigned long i = 0; i < list->size; i++) {
+long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+  for (size_t i = 0; i < list->size; i++) {
     if (equals(value, list->data[i])) {
       return i;
     }
@@ -233,7 +233,7 @@ bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type val
  *
  * @return the value removed from the index
  */
-dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long index) {
+dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index) {
   dummy_type removed = list->data[index];
   if (index < (list->size - 1)) {
     memmove(&list->data[index], &list->data[index+1], (sizeof(dummy_type) * (list->size - index - 1)));
@@ -253,8 +253,8 @@ dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned long in
  * 
  * @return true if allocation succeeds, false if not
  */
-bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocated_size_increase) {
-  unsigned long new_size = list->size + pre_allocated_size_increase;
+bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase) {
+  size_t new_size = list->size + pre_allocated_size_increase;
   return prefix__private_dyn_list_grow_internal(list, new_size);
 }
 
@@ -264,7 +264,7 @@ bool prefix_dyn_list_grow(struct prefix_dyn_list* list, unsigned int pre_allocat
 
 /* Internal list growing method, do not use.
  */
-bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsigned long new_size) {
+bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, size_t new_size) {
   dummy_type* new_data = realloc(list->data, sizeof(dummy_type) * new_size);
   if (new_data == NULL) {
     return false;
@@ -278,7 +278,7 @@ bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, unsign
 /* Internal list reallocation method, grows a lists capacity by a factor
  */
 bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list) {
-  unsigned long new_size = list->size * 1.6;
+  size_t new_size = list->size * 1.6;
   return prefix__private_dyn_list_grow_internal(list, new_size);
 }
 

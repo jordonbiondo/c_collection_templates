@@ -26,31 +26,31 @@
 /* header */
 
 struct prefix_cbuffer;
-struct prefix_cbuffer * prefix_cbuffer_create(unsigned long capacity, dummy_type default_value);
+struct prefix_cbuffer * prefix_cbuffer_create(size_t capacity, dummy_type default_value);
 void prefix_cbuffer_destroy(struct prefix_cbuffer* buffer, void(*element_destroyer)(dummy_type));
 bool prefix_cbuffer_empty(struct prefix_cbuffer* buffer);
 bool prefix_cbuffer_full(struct prefix_cbuffer* buffer);
 bool prefix_cbuffer_enqeue(struct prefix_cbuffer* buffer, dummy_type value);
 dummy_type prefix_cbuffer_pop(struct prefix_cbuffer* buffer);
 dummy_type prefix_cbuffer_peek(struct prefix_cbuffer * buffer);
-unsigned long prefix_cbuffer_capacity(struct prefix_cbuffer* buffer);
+size_t prefix_cbuffer_capacity(struct prefix_cbuffer* buffer);
 
 /* end header */
 
 /* implementation */
 
 struct prefix_cbuffer {
-  unsigned long capacity;
+  size_t capacity;
   dummy_type default_value;
   dummy_type* values;
-  unsigned long population;
+  size_t population;
   struct prefix_cbuffer_private_data {
-    unsigned long put_position;
-    unsigned long get_position;
+    size_t put_position;
+    size_t get_position;
   } private;
 };
 
-struct prefix_cbuffer * prefix_cbuffer_create(unsigned long capacity, dummy_type default_value) {
+struct prefix_cbuffer * prefix_cbuffer_create(size_t capacity, dummy_type default_value) {
   struct prefix_cbuffer* buffer = cct_alloc(struct prefix_cbuffer, 1);
   buffer->capacity = capacity;
   buffer->default_value = default_value;
@@ -63,7 +63,7 @@ struct prefix_cbuffer * prefix_cbuffer_create(unsigned long capacity, dummy_type
 
 void prefix_cbuffer_destroy(struct prefix_cbuffer * buffer, void(*element_destroyer)(dummy_type)) {
   if (element_destroyer) {
-    for (unsigned long i = 0; i < buffer->capacity; i++) {
+    for (size_t i = 0; i < buffer->capacity; i++) {
       element_destroyer(buffer->values[i]);
     }
   }
@@ -115,7 +115,7 @@ dummy_type prefix_cbuffer_peek(struct prefix_cbuffer * buffer) {
   }
 }
 
-unsigned long prefix_cbuffer_capacity(struct prefix_cbuffer * buffer) {
+size_t prefix_cbuffer_capacity(struct prefix_cbuffer * buffer) {
   return buffer->capacity;
 }
 
