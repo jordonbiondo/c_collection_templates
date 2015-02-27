@@ -25,21 +25,21 @@
 
 /* header */
 
-struct prefix_cb;
-struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_value);
-void prefix_cb_destroy(struct prefix_cb* buffer, void(*element_destroyer)(dummy_type));
-bool prefix_cb_empty(struct prefix_cb* buffer);
-bool prefix_cb_full(struct prefix_cb* buffer);
-bool prefix_cb_enqeue(struct prefix_cb* buffer, dummy_type value);
-dummy_type prefix_cb_pop(struct prefix_cb* buffer);
-dummy_type prefix_cb_peek(struct prefix_cb * buffer);
-unsigned long prefix_cb_capacity(struct prefix_cb* buffer);
+struct prefix_cbuffer;
+struct prefix_cbuffer * prefix_cbuffer_create(unsigned long capacity, dummy_type default_value);
+void prefix_cbuffer_destroy(struct prefix_cbuffer* buffer, void(*element_destroyer)(dummy_type));
+bool prefix_cbuffer_empty(struct prefix_cbuffer* buffer);
+bool prefix_cbuffer_full(struct prefix_cbuffer* buffer);
+bool prefix_cbuffer_enqeue(struct prefix_cbuffer* buffer, dummy_type value);
+dummy_type prefix_cbuffer_pop(struct prefix_cbuffer* buffer);
+dummy_type prefix_cbuffer_peek(struct prefix_cbuffer * buffer);
+unsigned long prefix_cbuffer_capacity(struct prefix_cbuffer* buffer);
 
 /* end header */
 
 /* implementation */
 
-struct prefix_cb {
+struct prefix_cbuffer {
   unsigned long capacity;
   dummy_type default_value;
   dummy_type* values;
@@ -50,8 +50,8 @@ struct prefix_cb {
   } private;
 };
 
-struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_value) {
-  struct prefix_cb* buffer = cct_alloc(struct prefix_cb, 1);
+struct prefix_cbuffer * prefix_cbuffer_create(unsigned long capacity, dummy_type default_value) {
+  struct prefix_cbuffer* buffer = cct_alloc(struct prefix_cbuffer, 1);
   buffer->capacity = capacity;
   buffer->default_value = default_value;
   buffer->values = cct_alloc(dummy_type, capacity);
@@ -61,7 +61,7 @@ struct prefix_cb * prefix_cb_create(unsigned long capacity, dummy_type default_v
   return buffer;
 }
 
-void prefix_cb_destroy(struct prefix_cb * buffer, void(*element_destroyer)(dummy_type)) {
+void prefix_cbuffer_destroy(struct prefix_cbuffer * buffer, void(*element_destroyer)(dummy_type)) {
   if (element_destroyer) {
     for (unsigned long i = 0; i < buffer->capacity; i++) {
       element_destroyer(buffer->values[i]);
@@ -71,16 +71,16 @@ void prefix_cb_destroy(struct prefix_cb * buffer, void(*element_destroyer)(dummy
   free(buffer);
 }
 
-bool prefix_cb_empty(struct prefix_cb * buffer) {
+bool prefix_cbuffer_empty(struct prefix_cbuffer * buffer) {
   return buffer->population == 0;
 }
 
-bool prefix_cb_full(struct prefix_cb * buffer) {
+bool prefix_cbuffer_full(struct prefix_cbuffer * buffer) {
   return buffer->population == buffer->capacity;
 }
 
-bool prefix_cb_enqueue(struct prefix_cb * buffer, dummy_type value) {
-  if (prefix_cb_full(buffer)) {
+bool prefix_cbuffer_enqueue(struct prefix_cbuffer * buffer, dummy_type value) {
+  if (prefix_cbuffer_full(buffer)) {
     return false;
   } else {
     buffer->population++;
@@ -93,8 +93,8 @@ bool prefix_cb_enqueue(struct prefix_cb * buffer, dummy_type value) {
   }
 }
 
-dummy_type prefix_cb_pop(struct prefix_cb * buffer) {
-  if (prefix_cb_empty(buffer)) {
+dummy_type prefix_cbuffer_pop(struct prefix_cbuffer * buffer) {
+  if (prefix_cbuffer_empty(buffer)) {
     return buffer->default_value;
   } else {
     buffer->population--;
@@ -107,15 +107,15 @@ dummy_type prefix_cb_pop(struct prefix_cb * buffer) {
   }
 }
 
-dummy_type prefix_cb_peek(struct prefix_cb * buffer) {
-  if (prefix_cb_empty(buffer)) {
+dummy_type prefix_cbuffer_peek(struct prefix_cbuffer * buffer) {
+  if (prefix_cbuffer_empty(buffer)) {
     return buffer->default_value;
   } else {
     return buffer->values[buffer->private.get_position];
   }
 }
 
-unsigned long prefix_cb_capacity(struct prefix_cb * buffer) {
+unsigned long prefix_cbuffer_capacity(struct prefix_cbuffer * buffer) {
   return buffer->capacity;
 }
 
