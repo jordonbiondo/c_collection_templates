@@ -29,18 +29,18 @@ struct prefix_linked_list;
 struct prefix_linked_list_node;
 struct prefix_linked_list* prefix_linked_list_create();
 void prefix_linked_list_destroy(struct prefix_linked_list* list, void(*element_destroyer)(dummy_type));
-unsigned long prefix_linked_list_length(struct prefix_linked_list* list);
+size_t prefix_linked_list_length(struct prefix_linked_list* list);
 bool prefix_linked_list_empty(struct prefix_linked_list* list);
-dummy_type prefix_linked_list_get(struct prefix_linked_list* list, unsigned long index);
+dummy_type prefix_linked_list_get(struct prefix_linked_list* list, size_t index);
 dummy_type prefix_linked_list_peek(struct prefix_linked_list* list);
 dummy_type prefix_linked_list_pop(struct prefix_linked_list* list);
-dummy_type prefix_linked_list_set(struct prefix_linked_list* list, unsigned long index, dummy_type value);
-bool prefix_linked_list_insert(struct prefix_linked_list* list, unsigned long index, dummy_type value);
+dummy_type prefix_linked_list_set(struct prefix_linked_list* list, size_t index, dummy_type value);
+bool prefix_linked_list_insert(struct prefix_linked_list* list, size_t index, dummy_type value);
 bool prefix_linked_list_push(struct prefix_linked_list* list, dummy_type value);
 bool prefix_linked_list_append(struct prefix_linked_list* list, dummy_type value);
-unsigned long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type value);
-unsigned long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
-dummy_type prefix_linked_list_remove(struct prefix_linked_list* list, unsigned long index);
+long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type value);
+long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
+dummy_type prefix_linked_list_remove(struct prefix_linked_list* list, size_t index);
 
 struct prefix_linked_list_node* prefix__private_linked_list_node_create(dummy_type value);
 
@@ -51,7 +51,7 @@ struct prefix_linked_list_node* prefix__private_linked_list_node_create(dummy_ty
 struct prefix_linked_list {
   struct prefix_linked_list_node* head;
   struct prefix_linked_list_private_data {
-    unsigned long size;
+    size_t size;
   } private;
 };
 
@@ -82,7 +82,7 @@ void prefix_linked_list_destroy(struct prefix_linked_list* list, void(*element_d
   free(list);
 }
 
-unsigned long prefix_linked_list_length(struct prefix_linked_list* list) {
+size_t prefix_linked_list_length(struct prefix_linked_list* list) {
   return list->private.size;
 }
 
@@ -90,9 +90,9 @@ bool prefix_linked_list_empty(struct prefix_linked_list* list) {
   return list->private.size == 0;
 }
 
-dummy_type prefix_linked_list_get(struct prefix_linked_list* list, unsigned long index) {
+dummy_type prefix_linked_list_get(struct prefix_linked_list* list, size_t index) {
   struct prefix_linked_list_node* node = list->head;
-  for (unsigned long i = 0; i < index; i++) {
+  for (size_t i = 0; i < index; i++) {
     node = node->next;
   }
   return node->data;
@@ -104,17 +104,12 @@ dummy_type prefix_linked_list_peek(struct prefix_linked_list* list) {
 }
 
 dummy_type prefix_linked_list_pop(struct prefix_linked_list* list) {
-  struct prefix_linked_list_node* next = list->head->next;
-  dummy_type data = list->head->data;
-  free(list->head);
-  list->head = next;
-  list->private.size--;
-  return data;
+  return prefix_linked_list_remove(list, 0);
 }
 
-dummy_type prefix_linked_list_set(struct prefix_linked_list* list, unsigned long index, dummy_type value) {
+dummy_type prefix_linked_list_set(struct prefix_linked_list* list, size_t index, dummy_type value) {
   struct prefix_linked_list_node* node = list->head;
-  for (unsigned long i = 0; i < index; i++) {
+  for (size_t i = 0; i < index; i++) {
     node = node->next;
   }
   dummy_type previous_value = node->data;
@@ -122,7 +117,7 @@ dummy_type prefix_linked_list_set(struct prefix_linked_list* list, unsigned long
   return previous_value;
 }
 
-bool prefix_linked_list_insert(struct prefix_linked_list* list, unsigned long index, dummy_type value) {
+bool prefix_linked_list_insert(struct prefix_linked_list* list, size_t index, dummy_type value) {
   struct prefix_linked_list_node* new_node = prefix__private_linked_list_node_create(value);
   if (new_node == NULL) {
     return false;
@@ -134,7 +129,7 @@ bool prefix_linked_list_insert(struct prefix_linked_list* list, unsigned long in
     parent_pointer = &list->head;
   } else {
     struct prefix_linked_list_node* parent = list->head;
-    for (unsigned long i = 0; i < (index - 1); i++) {
+    for (size_t i = 0; i < (index - 1); i++) {
       parent = parent->next;
     }
     parent_pointer = &parent;
@@ -143,6 +138,7 @@ bool prefix_linked_list_insert(struct prefix_linked_list* list, unsigned long in
   struct prefix_linked_list_node* previous_next_node = *parent_pointer;
   *parent_pointer = new_node;
   new_node->next = previous_next_node;
+  list->private.size++;
   return true;
 }
 
@@ -156,19 +152,46 @@ bool prefix_linked_list_append(struct prefix_linked_list* list, dummy_type value
 }
 
 
-unsigned long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type value) {
-  /* TODO */
+long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type value) {
+  long i = 0;
+  for (struct prefix_linked_list_node* node = list->head; node != NULL; node = node->next) {
+    if (node->data == value) {
+      return i;
+    }
+    i++;
+  }
   return -1;
 }
 
-unsigned long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
-  /* TODO */
+long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+  long i = 0;
+  for (struct prefix_linked_list_node* node = list->head; node != NULL; node = node->next) {
+    if (equals(value, node->data)) {
+      return i;
+    }
+    i++;
+  }
   return -1;
 }
 
-dummy_type prefix_linked_list_remove(struct prefix_linked_list* list, unsigned long index) {
-  /* TODO */
-  return NULL;
+dummy_type prefix_linked_list_remove(struct prefix_linked_list* list, size_t index) {
+  struct prefix_linked_list_node** parent_pointer;
+  if (index == 0) {
+    parent_pointer = &list->head;
+  } else {
+    struct prefix_linked_list_node* parent = list->head;
+    for (size_t i = 0; i < (index - 1); i++) {
+      parent = parent->next;
+    }
+    parent_pointer = &parent->next;
+  }
+
+  struct prefix_linked_list_node* new_child = (*parent_pointer)->next;
+  dummy_type removed = (*parent_pointer)->data;
+  free(*parent_pointer);
+  *parent_pointer = new_child;
+  list->private.size--;
+  return removed;
 }
 
 /* end implementation */
