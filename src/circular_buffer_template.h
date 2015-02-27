@@ -32,6 +32,7 @@ bool prefix_cb_empty(struct prefix_cb* buffer);
 bool prefix_cb_full(struct prefix_cb* buffer);
 bool prefix_cb_enqeue(struct prefix_cb* buffer, dummy_type value);
 dummy_type prefix_cb_pop(struct prefix_cb* buffer);
+dummy_type prefix_cb_peek(struct prefix_cb * buffer);
 unsigned long prefix_cb_capacity(struct prefix_cb* buffer);
 
 /* end header */
@@ -103,6 +104,14 @@ dummy_type prefix_cb_pop(struct prefix_cb * buffer) {
       buffer->private.get_position = 0;
     }
     return output;
+  }
+}
+
+dummy_type prefix_cb_peek(struct prefix_cb * buffer) {
+  if (prefix_cb_empty(buffer)) {
+    return buffer->default_value;
+  } else {
+    return buffer->values[buffer->private.get_position];
   }
 }
 
