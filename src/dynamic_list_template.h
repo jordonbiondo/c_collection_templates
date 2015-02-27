@@ -51,7 +51,7 @@ bool prefix__private_dyn_list_grow(struct prefix_dyn_list* list);
 struct prefix_dyn_list {
   unsigned long size;
   dummy_type* data;
-  struct {
+  struct prefix_dyn_list_private_data {
     unsigned long real_size;
   } private;
 };

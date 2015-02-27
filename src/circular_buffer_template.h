@@ -44,7 +44,7 @@ struct prefix_cbuffer {
   dummy_type default_value;
   dummy_type* values;
   unsigned long population;
-  struct {
+  struct prefix_cbuffer_private_data {
     unsigned long put_position;
     unsigned long get_position;
   } private;
