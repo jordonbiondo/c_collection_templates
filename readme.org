@@ -35,6 +35,10 @@
 #+END_SRC
 
 ** Documentation
+   Generated documentation can be seen here:
+
+   http://jordonbiondo.github.io/c_collection_templates/
+
    Documentation can be generated with =make docs=, (requires cldoc)
 
    Host the docs locally with =make serve_docs=
