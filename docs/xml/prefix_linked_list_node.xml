@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_linked_list_node" name="prefix_linked_list_node" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <field id="prefix_linked_list_node::data" name="data">
+    <type name="dummy_type" ref="index#dummy_type" />
+  </field>
+  <field id="prefix_linked_list_node::next" name="next">
+    <type name="prefix_linked_list_node" qualifier="*" ref="prefix_linked_list_node#prefix_linked_list_node" />
+  </field>
+  <function id="prefix__private_linked_list_node_create" name="prefix__private_linked_list_node_create">
+    <brief>private</brief>
+    <return>
+      <type name="prefix_linked_list_node" qualifier="*" ref="prefix_linked_list_node#prefix_linked_list_node" />
+    </return>
+    <argument id="prefix__private_linked_list_node_create::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+</struct>

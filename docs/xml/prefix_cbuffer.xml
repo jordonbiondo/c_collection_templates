@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_cbuffer" name="prefix_cbuffer" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>header</brief>
+  <field id="prefix_cbuffer::capacity" name="capacity">
+    <type name="size_t" />
+  </field>
+  <field id="prefix_cbuffer::default_value" name="default_value">
+    <type name="dummy_type" ref="index#dummy_type" />
+  </field>
+  <field id="prefix_cbuffer::values" name="values">
+    <type name="dummy_type" qualifier="*" ref="index#dummy_type" />
+  </field>
+  <field id="prefix_cbuffer::population" name="population">
+    <type name="size_t" />
+  </field>
+  <field id="prefix_cbuffer::private" name="private">
+    <type name="prefix_cbuffer_private_data" ref="prefix_cbuffer_private_data#prefix_cbuffer_private_data" />
+  </field>
+  <function id="prefix_cbuffer_capacity" name="prefix_cbuffer_capacity">
+    <return>
+      <type name="size_t" />
+    </return>
+    <argument id="prefix_cbuffer_capacity::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_create" name="prefix_cbuffer_create">
+    <return>
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </return>
+    <argument id="prefix_cbuffer_create::capacity" name="capacity">
+      <type name="size_t" />
+    </argument>
+    <argument id="prefix_cbuffer_create::default_value" name="default_value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_destroy" name="prefix_cbuffer_destroy">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="prefix_cbuffer_destroy::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+    <argument id="prefix_cbuffer_destroy::element_destroyer" name="element_destroyer">
+      <type name="" qualifier="*" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_empty" name="prefix_cbuffer_empty">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_cbuffer_empty::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_enqeue" name="prefix_cbuffer_enqeue">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_cbuffer_enqeue::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+    <argument id="prefix_cbuffer_enqeue::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_enqueue" name="prefix_cbuffer_enqueue">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_cbuffer_enqueue::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+    <argument id="prefix_cbuffer_enqueue::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_full" name="prefix_cbuffer_full">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_cbuffer_full::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_peek" name="prefix_cbuffer_peek">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_cbuffer_peek::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+  </function>
+  <function id="prefix_cbuffer_pop" name="prefix_cbuffer_pop">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_cbuffer_pop::buffer" name="buffer">
+      <type name="prefix_cbuffer" qualifier="*" ref="prefix_cbuffer#prefix_cbuffer" />
+    </argument>
+  </function>
+</struct>

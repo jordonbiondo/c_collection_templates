@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_linked_list_private_data" name="prefix_linked_list_private_data" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <field id="prefix_linked_list_private_data::size" name="size">
+    <type name="size_t" />
+  </field>
+</struct>

@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_linked_list" name="prefix_linked_list" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>header</brief>
+  <field id="prefix_linked_list::head" name="head">
+    <type name="prefix_linked_list_node" qualifier="*" ref="prefix_linked_list_node#prefix_linked_list_node" />
+  </field>
+  <field id="prefix_linked_list::private" name="private">
+    <type name="prefix_linked_list_private_data" ref="prefix_linked_list_private_data#prefix_linked_list_private_data" />
+  </field>
+  <function id="prefix_linked_list_append" name="prefix_linked_list_append">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_linked_list_append::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_append::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_create" name="prefix_linked_list_create">
+    <return>
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </return>
+  </function>
+  <function id="prefix_linked_list_destroy" name="prefix_linked_list_destroy">
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="prefix_linked_list_destroy::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_destroy::element_destroyer" name="element_destroyer">
+      <type name="" qualifier="*" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_empty" name="prefix_linked_list_empty">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_linked_list_empty::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_get" name="prefix_linked_list_get">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_linked_list_get::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_get::index" name="index">
+      <type name="size_t" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_index_of" name="prefix_linked_list_index_of">
+    <return>
+      <type builtin="yes" name="long" />
+    </return>
+    <argument id="prefix_linked_list_index_of::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_index_of::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_index_of_equal" name="prefix_linked_list_index_of_equal">
+    <return>
+      <type builtin="yes" name="long" />
+    </return>
+    <argument id="prefix_linked_list_index_of_equal::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_index_of_equal::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+    <argument id="prefix_linked_list_index_of_equal::equals" name="equals">
+      <type name="" qualifier="*" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_insert" name="prefix_linked_list_insert">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_linked_list_insert::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_insert::index" name="index">
+      <type name="size_t" />
+    </argument>
+    <argument id="prefix_linked_list_insert::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_length" name="prefix_linked_list_length">
+    <return>
+      <type name="size_t" />
+    </return>
+    <argument id="prefix_linked_list_length::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_peek" name="prefix_linked_list_peek">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_linked_list_peek::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_pop" name="prefix_linked_list_pop">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_linked_list_pop::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_push" name="prefix_linked_list_push">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_linked_list_push::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_push::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_remove" name="prefix_linked_list_remove">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_linked_list_remove::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_remove::index" name="index">
+      <type name="size_t" />
+    </argument>
+  </function>
+  <function id="prefix_linked_list_set" name="prefix_linked_list_set">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_linked_list_set::list" name="list">
+      <type name="prefix_linked_list" qualifier="*" ref="prefix_linked_list#prefix_linked_list" />
+    </argument>
+    <argument id="prefix_linked_list_set::index" name="index">
+      <type name="size_t" />
+    </argument>
+    <argument id="prefix_linked_list_set::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+</struct>

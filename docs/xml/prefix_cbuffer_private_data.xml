@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_cbuffer_private_data" name="prefix_cbuffer_private_data" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <field id="prefix_cbuffer_private_data::put_position" name="put_position">
+    <type name="size_t" />
+  </field>
+  <field id="prefix_cbuffer_private_data::get_position" name="get_position">
+    <type name="size_t" />
+  </field>
+</struct>

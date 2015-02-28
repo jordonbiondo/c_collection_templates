@@ -1,0 +1,338 @@
+<?xml version='1.0' encoding='utf-8'?>
+<struct id="prefix_dyn_list" name="prefix_dyn_list" xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <brief>header</brief>
+  <field id="prefix_dyn_list::size" name="size">
+    <type name="size_t" />
+  </field>
+  <field id="prefix_dyn_list::data" name="data">
+    <type name="dummy_type" qualifier="*" ref="index#dummy_type" />
+  </field>
+  <field id="prefix_dyn_list::private" name="private">
+    <type name="prefix_dyn_list_private_data" ref="prefix_dyn_list_private_data#prefix_dyn_list_private_data" />
+  </field>
+  <function id="prefix__private_dyn_list_grow" name="prefix__private_dyn_list_grow">
+    <brief> Internal list reallocation method, grows a lists capacity by a factor</brief>
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix__private_dyn_list_grow::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix__private_dyn_list_grow_internal" name="prefix__private_dyn_list_grow_internal">
+    <brief> Internal list growing method, do not use.</brief>
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix__private_dyn_list_grow_internal::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix__private_dyn_list_grow_internal::new_size" name="new_size">
+      <type name="size_t" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_add" name="prefix_dyn_list_add">
+    <brief> Append a value to a dynamic list.</brief>
+    <doc>Append a value to a dynamic list.
+If the list has reached capacity it reallocate itself with more space.
+
+</doc>
+    <return>
+      <doc>true if value was added successfully, or false if
+allocation was necessary and failed.</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_add::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_add::value" name="value">
+      <doc>the value to append to the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_contains" name="prefix_dyn_list_contains">
+    <brief> Find out if a list contains an element == to a given value.</brief>
+    <doc>Find out if a list contains an element == to a given value.
+If == is not sufficient to check for equality use <ref ref="prefix_dyn_list#prefix_dyn_list_contains_equal">prefix_dyn_list_contains_equal</ref>
+
+</doc>
+    <return>
+      <doc>true if list contains an element == to the given value</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_contains::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_contains::value" name="value">
+      <doc>the value to look for in the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_contains_equal" name="prefix_dyn_list_contains_equal">
+    <brief> Find out if a list contains an element equal to a given value using a equallity checking function.</brief>
+    <doc>Find out if a list contains an element such that equals(value, element) returns true
+If == is sufficient to check for equality use <ref ref="prefix_dyn_list#prefix_dyn_list_contains">prefix_dyn_list_contains</ref>
+
+</doc>
+    <return>
+      <doc>true if list contains an element such that equals(value, element) returns true.</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_contains_equal::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_contains_equal::value" name="value">
+      <doc>the value to find in the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+    <argument id="prefix_dyn_list_contains_equal::equals" name="equals">
+      <type name="" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_create" name="prefix_dyn_list_create">
+    <brief> Create a new dynamic list for this type.</brief>
+    <return>
+      <doc>a pointer to a new dynamic list or NULL if allocation fails.</doc>
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </return>
+    <argument id="prefix_dyn_list_create::initial_capacity" name="initial_capacity">
+      <doc>Initial allocated capacity, pass zero to use the default value.</doc>
+      <type name="size_t" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_destroy" name="prefix_dyn_list_destroy">
+    <brief> Free a dynamic list and all of its data.</brief>
+    <return>
+      <type builtin="yes" name="void" />
+    </return>
+    <argument id="prefix_dyn_list_destroy::list" name="list">
+      <doc>The dynamic list to free.</doc>
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_destroy::element_destroyer" name="element_destroyer">
+      <doc>If not NULL, each element of list's data will be passed
+through this function which you can use free or otherwise cleanup each
+individual element before its reference is lost.</doc>
+      <type name="" qualifier="*" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_empty" name="prefix_dyn_list_empty">
+    <brief> Get whether or not a list is empty.</brief>
+    <return>
+      <doc>true if the list is empty else false.</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_empty::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_get" name="prefix_dyn_list_get">
+    <brief> Get the value of list at a given index.</brief>
+    <doc>Get the value of list at a given index.
+Does no bound checking, it is your responsibility to ensure index is
+within the bounds of the list. See also: <ref ref="prefix_dyn_list#prefix_dyn_list_length">prefix_dyn_list_length</ref>
+
+</doc>
+    <return>
+      <doc>the value of list at index</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_get::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_get::index" name="index">
+      <doc>the index at which to retrieve the stored value in list</doc>
+      <type builtin="yes" name="unsigned int" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_grow" name="prefix_dyn_list_grow">
+    <brief> Manually increase a lists allocated capacity.</brief>
+    <doc>Manually increase a lists allocated capacity.
+Typically a lists capacity will automatically grow by 60% when it becomes full
+but this can be usefull if you know you are going to be adding large amounts
+of data and want to minimumize reallocations.
+
+</doc>
+    <return>
+      <doc>true if allocation succeeds, false if not</doc>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_grow::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_grow::pre_allocated_size_increase" name="pre_allocated_size_increase">
+      <doc>the number of elements to allocate additionally
+memory for.</doc>
+      <type name="size_t" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_index_of" name="prefix_dyn_list_index_of">
+    <brief> Return the index of the first element in a list == to a given value</brief>
+    <doc>Return the index of the first element in a list that is == to a given value
+If == is not sufficient to check for equality use <ref ref="prefix_dyn_list#prefix_dyn_list_index_of_equal">prefix_dyn_list_index_of_equal</ref>
+
+</doc>
+    <return>
+      <doc>the first index of an element == to value in list or -1 if value is not found.</doc>
+      <type builtin="yes" name="long" />
+    </return>
+    <argument id="prefix_dyn_list_index_of::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_index_of::value" name="value">
+      <doc>the value to find in the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_index_of_equal" name="prefix_dyn_list_index_of_equal">
+    <brief> Return the index of the first element in a list where a equallity function returns true.</brief>
+    <doc>Return the index of the first element in a list where a equallity function returns true.
+The function will be called with the given value and each element of the list in order
+until it returns true to signify the values are equal.
+If == will be  sufficient to check for equality use <ref ref="prefix_dyn_list#prefix_dyn_list_index_of">prefix_dyn_list_index_of</ref>
+
+</doc>
+    <return>
+      <doc>the first index of an element == to value in list or -1 if value is not found.</doc>
+      <type builtin="yes" name="long" />
+    </return>
+    <argument id="prefix_dyn_list_index_of_equal::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_index_of_equal::value" name="value">
+      <doc>the value to find in the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+    <argument id="prefix_dyn_list_index_of_equal::equals" name="equals">
+      <doc>a equallity checking function used to check if a value in the list is equal
+to the given value</doc>
+      <type name="" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_insert" name="prefix_dyn_list_insert">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_insert::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_insert::index" name="index">
+      <type builtin="yes" name="unsigned int" />
+    </argument>
+    <argument id="prefix_dyn_list_insert::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_length" name="prefix_dyn_list_length">
+    <brief> The number of elements in list.</brief>
+    <return>
+      <doc>the number of elements in list</doc>
+      <type builtin="yes" name="long" />
+    </return>
+    <argument id="prefix_dyn_list_length::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_peek_back" name="prefix_dyn_list_peek_back">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_peek_back::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_peek_front" name="prefix_dyn_list_peek_front">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_peek_front::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_pop_back" name="prefix_dyn_list_pop_back">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_pop_back::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_pop_front" name="prefix_dyn_list_pop_front">
+    <return>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_pop_front::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_push_back" name="prefix_dyn_list_push_back">
+    <brief> Push a value onto the back of the dynamic list</brief>
+    <doc>Push a value onto the back of the dynamic list
+This is just a wrapper for <ref ref="prefix_dyn_list#prefix_dyn_list_add">prefix_dyn_list_add</ref>
+</doc>
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_push_back::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_push_back::value" name="value">
+      <doc>the value to append to the list</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_push_front" name="prefix_dyn_list_push_front">
+    <return>
+      <type builtin="yes" name="bool" />
+    </return>
+    <argument id="prefix_dyn_list_push_front::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_push_front::value" name="value">
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_remove" name="prefix_dyn_list_remove">
+    <brief> Remove the element of list at an index.</brief>
+    <doc>Remove the element of list at an index.
+Does no bound checking, it is your responsibility to ensure index is
+within the bounds of the list. See also: <ref ref="prefix_dyn_list#prefix_dyn_list_length">prefix_dyn_list_length</ref>
+All elements to the right of index are shifted left to fill the whole;
+
+</doc>
+    <return>
+      <doc>the value removed from the index</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_remove::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_remove::index" name="index">
+      <doc>the index of the element to remove from the list</doc>
+      <type builtin="yes" name="unsigned int" />
+    </argument>
+  </function>
+  <function id="prefix_dyn_list_set" name="prefix_dyn_list_set">
+    <brief> Replace the value of list at a given index with a new value;</brief>
+    <doc>Replace the value of list at a given index.
+Does no bound checking, it is your responsibility to ensure index is
+within the bounds of the list. See also: <ref ref="prefix_dyn_list#prefix_dyn_list_length">prefix_dyn_list_length</ref>
+
+</doc>
+    <return>
+      <doc>the previous value at index that has been replaced.</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </return>
+    <argument id="prefix_dyn_list_set::list" name="list">
+      <type name="prefix_dyn_list" qualifier="*" ref="prefix_dyn_list#prefix_dyn_list" />
+    </argument>
+    <argument id="prefix_dyn_list_set::index" name="index">
+      <doc>the index at which to retrieve the stored value in list</doc>
+      <type builtin="yes" name="unsigned int" />
+    </argument>
+    <argument id="prefix_dyn_list_set::value" name="value">
+      <doc>the value to place at index</doc>
+      <type name="dummy_type" ref="index#dummy_type" />
+    </argument>
+  </function>
+</struct>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<index xmlns="http://jessevdk.github.com/cldoc/1.0">
+  <struct name="prefix_cbuffer" ref="prefix_cbuffer#prefix_cbuffer">
+    <brief>header</brief>
+  </struct>
+  <struct name="prefix_cbuffer_private_data" ref="prefix_cbuffer_private_data#prefix_cbuffer_private_data" />
+  <struct name="prefix_dyn_list" ref="prefix_dyn_list#prefix_dyn_list">
+    <brief>header</brief>
+  </struct>
+  <struct name="prefix_dyn_list_private_data" ref="prefix_dyn_list_private_data#prefix_dyn_list_private_data" />
+  <struct name="prefix_linked_list" ref="prefix_linked_list#prefix_linked_list">
+    <brief>header</brief>
+  </struct>
+  <struct name="prefix_linked_list_node" ref="prefix_linked_list_node#prefix_linked_list_node" />
+  <struct name="prefix_linked_list_private_data" ref="prefix_linked_list_private_data#prefix_linked_list_private_data" />
+  <typedef id="dummy_type" name="dummy_type">
+    <brief> Internal doc specific type, ignore.</brief>
+    <type builtin="yes" name="int" qualifier="*" />
+  </typedef>
+</index>
