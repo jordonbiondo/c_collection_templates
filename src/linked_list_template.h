@@ -132,7 +132,7 @@ bool prefix_linked_list_insert(struct prefix_linked_list* list, size_t index, du
     for (size_t i = 0; i < (index - 1); i++) {
       parent = parent->next;
     }
-    parent_pointer = &parent;
+    parent_pointer = &parent->next;
   }
 
   struct prefix_linked_list_node* previous_next_node = *parent_pointer;

@@ -131,6 +131,7 @@ TEST linked_list_pop_test () {
   ASSERT(test_linked_list_pop(list) == 10);
   ASSERT(test_linked_list_pop(list) == 1);
   ASSERT(test_linked_list_empty(list));
+  test_linked_list_destroy(list, NULL);
   PASS();
 }
 
@@ -145,11 +146,28 @@ TEST linked_list_set_test () {
   ASSERT(test_linked_list_get(list, 0) == 99);
   ASSERT(test_linked_list_get(list, 1) == 88);
   ASSERT(test_linked_list_get(list, 2) == 77);
+  test_linked_list_destroy(list, NULL);
   PASS();
 }
 
 TEST linked_list_insert_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  test_linked_list_push(list, 3);
+  test_linked_list_push(list, 1);
+  ASSERT(test_linked_list_insert(list, 1, 2) == true);
+  ASSERT(test_linked_list_get(list, 0) == 1);
+  ASSERT(test_linked_list_get(list, 1) == 2);
+  ASSERT(test_linked_list_get(list, 2) == 3);
+
+  with_spoofed_oom {
+    ASSERT(test_linked_list_insert(list, 1, 2) == false);
+  }
+
+  ASSERT(test_linked_list_get(list, 0) == 1);
+  ASSERT(test_linked_list_get(list, 1) == 2);
+  ASSERT(test_linked_list_get(list, 2) == 3);
+
+  PASS();
 }
 
 TEST linked_list_push_test () {
