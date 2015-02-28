@@ -166,28 +166,95 @@ TEST linked_list_insert_test () {
   ASSERT(test_linked_list_get(list, 0) == 1);
   ASSERT(test_linked_list_get(list, 1) == 2);
   ASSERT(test_linked_list_get(list, 2) == 3);
-
+  test_linked_list_destroy(list, NULL);
   PASS();
 }
 
 TEST linked_list_push_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  ASSERT(test_linked_list_push(list, 3) == true);
+  ASSERT(test_linked_list_push(list, 2) == true);
+  ASSERT(test_linked_list_push(list, 1) == true);
+  ASSERT(test_linked_list_get(list, 0) == 1);
+  ASSERT(test_linked_list_get(list, 1) == 2);
+  ASSERT(test_linked_list_get(list, 2) == 3);
+
+  with_spoofed_oom {
+    ASSERT(test_linked_list_insert(list, 1, 2) == false);
+  }
+  test_linked_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST linked_list_append_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+  test_linked_list_push(list, 1);
+  ASSERT(test_linked_list_append(list, 2) == true);
+  ASSERT(test_linked_list_append(list, 3) == true);
+  ASSERT(test_linked_list_get(list, 0) == 1);
+  ASSERT(test_linked_list_get(list, 1) == 2);
+  ASSERT(test_linked_list_get(list, 2) == 3);
+  ASSERT(test_linked_list_length(list) == 3);
+
+  with_spoofed_oom {
+    ASSERT(test_linked_list_append(list, 100) == false);
+  }
+  test_linked_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST linked_list_index_of_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+
+  test_linked_list_push(list, 100);
+  test_linked_list_push(list, 1000);
+  test_linked_list_push(list, 50);
+  test_linked_list_push(list, 500);
+  test_linked_list_push(list, 1);
+
+  ASSERT((size_t)(test_linked_list_index_of(list, 100)) == (test_linked_list_length(list) - 1));
+  ASSERT(test_linked_list_index_of(list, 1000) == 3);
+  ASSERT(test_linked_list_index_of(list, 50) == 2);
+  ASSERT(test_linked_list_index_of(list, 1) == 0);
+  ASSERT(test_linked_list_index_of(list, 9999) < 0);
+  test_linked_list_destroy(list, NULL);
+  PASS();
+}
+
+bool evens_odds_equal(int a, int b) {
+  return (a % 2) == (b % 2);
 }
 
 TEST linked_list_index_of_equal_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+
+  test_linked_list_push(list, 2);
+  test_linked_list_push(list, 9);
+  test_linked_list_push(list, 11);
+
+  ASSERT(test_linked_list_index_of_equal(list, 4, evens_odds_equal) == 2);
+  ASSERT(test_linked_list_index_of_equal(list, 99, evens_odds_equal) == 0);
+  test_linked_list_remove(list, 2);
+  ASSERT(test_linked_list_index_of_equal(list, 50, evens_odds_equal) < 0);
+  test_linked_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST linked_list_remove_test () {
-  SKIP();
+  ill* list = test_linked_list_create();
+
+  test_linked_list_push(list, 10);
+  test_linked_list_push(list, 5);
+  test_linked_list_push(list, 1);
+
+  ASSERT(test_linked_list_index_of(list, 1) == 0);
+  ASSERT(test_linked_list_index_of(list, 10) == 2);
+  test_linked_list_remove(list, 1);
+  ASSERT(test_linked_list_index_of(list, 10) == 1);
+  ASSERT(test_linked_list_index_of(list, 1) == 0);
+  ASSERT(test_linked_list_index_of(list, 5) < 0);
+  test_linked_list_destroy(list, NULL);
+  PASS();
 }
 
 SUITE(linked_list) {
