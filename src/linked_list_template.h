@@ -39,7 +39,7 @@ bool prefix_linked_list_insert(struct prefix_linked_list* list, size_t index, du
 bool prefix_linked_list_push(struct prefix_linked_list* list, dummy_type value);
 bool prefix_linked_list_append(struct prefix_linked_list* list, dummy_type value);
 long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type value);
-long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
+long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type));
 dummy_type prefix_linked_list_remove(struct prefix_linked_list* list, size_t index);
 
 struct prefix_linked_list_node* prefix__private_linked_list_node_create(dummy_type value);
@@ -163,7 +163,7 @@ long prefix_linked_list_index_of(struct prefix_linked_list* list, dummy_type val
   return -1;
 }
 
-long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+long prefix_linked_list_index_of_equal(struct prefix_linked_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type)) {
   long i = 0;
   for (struct prefix_linked_list_node* node = list->head; node != NULL; node = node->next) {
     if (equals(value, node->data)) {
