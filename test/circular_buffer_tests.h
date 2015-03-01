@@ -18,6 +18,7 @@
 #define CIRCULAR_BUFFER_TESTS_H
 
 #include "lib/greatest.h"
+#include "cct_test_common.h"
 #include "../collection_templates.h"
 
 define_circular_buffer(int, test)
