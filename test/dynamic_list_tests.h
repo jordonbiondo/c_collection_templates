@@ -23,20 +23,75 @@
 
 define_dyn_list(int, test)
 
+typedef struct test_dyn_list tdl;
+
 TEST dyn_list_create_test() {
-  SKIP();
+  size_t initial_capacity = 20;
+  tdl* list = test_dyn_list_create(initial_capacity);
+  ASSERTm("The new list has size 0", list->size == 0);
+  ASSERTm("The new list has capacity set", list->private.real_size == initial_capacity);
+  ASSERTm("New list is not null.", list != NULL);
+  test_dyn_list_destroy(list, NULL);
+
+  with_spoofed_oom {
+    tdl* list2 = test_dyn_list_create(0);
+    ASSERTm("New list is null if allocation fails", list2 == NULL);
+  }
+
+  list = test_dyn_list_create(0);
+  ASSERTm("The new list given 0 capacity uses a default", list->private.real_size > 0);
+  test_dyn_list_destroy(list, NULL);
+
+  PASS();
+}
+
+int destroy_test_sum = 0;
+int destroy_test_count = 0;
+void tdl_destroyer(int x) {
+  destroy_test_count++;
+  destroy_test_sum += x;
 }
 
 TEST dyn_list_destroy_test() {
-  SKIP();
+  tdl* list = test_dyn_list_create(10);
+  destroy_test_sum = 0;
+  destroy_test_count = 0;
+
+  test_dyn_list_add(list, 1);
+  test_dyn_list_add(list, 10);
+  test_dyn_list_add(list, 100);
+  test_dyn_list_add(list, 1000);
+  test_dyn_list_destroy(list, tdl_destroyer);
+  ASSERTm("destroyer method called for each element.", destroy_test_sum == 1111);
+  ASSERTm("destroyer method called only for used allocated space.", destroy_test_count == 4);
+
+  destroy_test_sum = 0;
+  destroy_test_count = 0;
+  PASS();
 }
 
 TEST dyn_list_length_test() {
-  SKIP();
+  tdl* list = test_dyn_list_create(10);
+  ASSERT(test_dyn_list_length(list) == 0);
+  test_dyn_list_add(list, 1);
+  test_dyn_list_add(list, 1);
+  ASSERT(test_dyn_list_length(list) == 2);
+  test_dyn_list_insert(list, 1, 1);
+  ASSERT(test_dyn_list_length(list) == 3);
+  test_dyn_list_remove(list, 0);
+  ASSERT(test_dyn_list_length(list) == 2);
+  test_dyn_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST dyn_list_empty_test() {
-  SKIP();
+  tdl* list = test_dyn_list_create(0);
+  ASSERTm("a new list is empty.", test_dyn_list_empty(list) == true);
+  test_dyn_list_add(list, 100);
+  ASSERT(test_dyn_list_empty(list) == false);
+  test_dyn_list_remove(list, 0);
+  ASSERT(test_dyn_list_empty(list) == true);
+  PASS();
 }
 
 TEST dyn_list_get_test() {
