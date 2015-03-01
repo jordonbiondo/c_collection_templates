@@ -30,7 +30,7 @@ struct prefix_cbuffer * prefix_cbuffer_create(size_t capacity, dummy_type defaul
 void prefix_cbuffer_destroy(struct prefix_cbuffer* buffer, void(*element_destroyer)(dummy_type));
 bool prefix_cbuffer_empty(struct prefix_cbuffer* buffer);
 bool prefix_cbuffer_full(struct prefix_cbuffer* buffer);
-bool prefix_cbuffer_enqeue(struct prefix_cbuffer* buffer, dummy_type value);
+bool prefix_cbuffer_enqueue(struct prefix_cbuffer* buffer, dummy_type value);
 dummy_type prefix_cbuffer_pop(struct prefix_cbuffer* buffer);
 dummy_type prefix_cbuffer_peek(struct prefix_cbuffer * buffer);
 size_t prefix_cbuffer_capacity(struct prefix_cbuffer* buffer);
