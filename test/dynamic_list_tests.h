@@ -95,7 +95,15 @@ TEST dyn_list_empty_test() {
 }
 
 TEST dyn_list_get_test() {
-  SKIP();
+  tdl* list = test_dyn_list_create(0);
+  test_dyn_list_add(list, 100);
+  test_dyn_list_add(list, 10);
+  test_dyn_list_add(list, 1);
+  ASSERT(test_dyn_list_get(list, 0) == 100);
+  ASSERT(test_dyn_list_get(list, 1) == 10);
+  ASSERT(test_dyn_list_get(list, 2) == 1);
+  test_dyn_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST dyn_list_set_test() {
