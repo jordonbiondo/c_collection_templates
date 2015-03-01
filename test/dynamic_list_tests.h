@@ -125,7 +125,30 @@ TEST dyn_list_set_test() {
 }
 
 TEST dyn_list_add_test() {
-  SKIP();
+  size_t start_capacity = 5;
+  tdl* list = test_dyn_list_create(start_capacity);
+  for (size_t i = 0; i < (start_capacity - 1); i++) {
+    test_dyn_list_add(list, i);
+  }
+
+  ASSERT(test_dyn_list_length(list) == 4);
+  ASSERT(list->size == (list->private.real_size - 1));
+  ASSERTm("list does not grow before hitting capacity", list->private.real_size == start_capacity);
+
+  test_dyn_list_add(list, 4);
+
+  ASSERT(test_dyn_list_length(list) == 5);
+  ASSERTm("The list has grown and there is more room now.", list->size < (list->private.real_size - 1));
+  ASSERTm("The list grows beyond initial capacity once full.",
+          list->private.real_size > start_capacity);
+
+  ASSERT(test_dyn_list_get(list, 0) == 0);
+  ASSERT(test_dyn_list_get(list, 1) == 1);
+  ASSERT(test_dyn_list_get(list, 2) == 2);
+  ASSERT(test_dyn_list_get(list, 3) == 3);
+  ASSERT(test_dyn_list_get(list, 4) == 4);
+  test_dyn_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST dyn_list_index_of_test() {
