@@ -9,9 +9,13 @@ function start () {
 }
 
 function include_common () {
+
+    echo "#define COLLECTION_TEMPLATES_COMPILED_HEADER" >> $output
+
     for file in "${common[@]}"; do
         cat $file >> $output
     done
+
 }
 
 function include_macrofied_files () {
