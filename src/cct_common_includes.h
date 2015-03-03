@@ -24,7 +24,7 @@
 #define cct_alloc(type, count) ((type*)(malloc(sizeof(type) * (count))))
 
 #ifndef CCT_DUMMY_TYPE
-/* Internal doc specific type, ignore.
+/* Generic type replaced with supplied collection definition type.
  */
 typedef int* dummy_type; // DUMMY_TYPE_DECLARATION
 #else
