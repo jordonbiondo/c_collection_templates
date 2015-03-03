@@ -6,3 +6,6 @@ docs: collection_templates.h
 
 serve_docs:
 	cldoc serve -- docs/
+
+tests: collection_templates.h
+	gcc test/cct_tests.c -o test/cct_tests && ./test/cct_tests
