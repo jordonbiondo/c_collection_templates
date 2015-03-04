@@ -21,12 +21,14 @@ GREATEST_MAIN_DEFS();
 #include "linked_list_tests.h"
 #include "dynamic_list_tests.h"
 #include "circular_buffer_tests.h"
+#include "hash_map_tests.h"
 
 int main (int argc, char** argv) {
   GREATEST_MAIN_BEGIN();
   RUN_SUITE(dynamic_list);
   RUN_SUITE(circular_buffer);
   RUN_SUITE(linked_list);
+  RUN_SUITE(hash_map);
   GREATEST_MAIN_END();
 }
 
