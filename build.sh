@@ -2,7 +2,7 @@
 
 output=collection_templates.h
 common=(src/cct_common_includes.h)
-templates=(src/dynamic_list_template.h src/circular_buffer_template.h src/linked_list_template.h)
+templates=(src/dynamic_list_template.h src/circular_buffer_template.h src/linked_list_template.h src/hash_map_template.h)
 
 function start () {
     echo > $output
