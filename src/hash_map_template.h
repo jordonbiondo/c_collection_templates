@@ -116,6 +116,7 @@ bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type da
 
   if (pair == NULL) {
     /* this should NEVER happen */
+    printf("- Fatal Error: \n- defined hash must not have grown, it is full! Dying...\n");
     exit(-1);
   }
 
