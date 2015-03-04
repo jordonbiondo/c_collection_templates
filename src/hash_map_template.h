@@ -25,7 +25,7 @@
 typedef char* key_type;
 typedef int data_type;
 unsigned int hash_fn(key_type key);
-bool equals_fn(data_type a, data_type b);
+bool equals_fn(key_type a, key_type b);
 #endif
 
 // MACRO_DEFINE define_hash_map(key_type, data_type, prefix, hash_fn, equals_fn)
@@ -38,9 +38,13 @@ void prefix_hash_map_destroy(struct prefix_hash_map* map, void(*key_destroyer)(k
 bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type data);
 data_type prefix_hash_map_get(struct prefix_hash_map* map, key_type key);
 bool prefix_hash_map_contains(struct prefix_hash_map* map, key_type key);
-data_type prefix_hash_map_remove(struct prefix_hash_map* map, key_type key);
-bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data);
-key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data);
+struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, key_type key);
+/* bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data); */
+/* key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data); */
+
+bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map);
+size_t prefix__private_hash_map_hash_index(struct prefix_hash_map* map, key_type key);
+struct prefix_hash_map_pair* prefix__private_hash_map_pair_for(struct prefix_hash_map* map, key_type key);
 
 /* end header */
 
@@ -48,10 +52,27 @@ key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data);
 
 struct prefix_hash_map {
   struct prefix_hash_map_private_data {
-    unsigned int(*hash_fn)(key_type);
-    bool (*equals_fn)(data_type, data_type);
+    /* Hash function mapping a key to a semi-unique(ish) unsigned int.
+     */
+    unsigned int(*hash_func)(key_type);
+    /* equals function that determines if a key is equal to another
+     */
+    bool (*equals_func)(key_type, key_type);
+
+    /* The allocated capacity of pairs
+     */
     size_t capacity;
+
+    /* The number of non empty pairs
+     */
+    size_t population;
+
+    /* If population/capcity is greather than this: re hash
+     */
     double rehash_threshold;
+
+    /* The allocated space for data
+     */
     struct prefix_hash_map_pair {
       bool empty;
       key_type key;
@@ -63,9 +84,10 @@ struct prefix_hash_map {
 struct prefix_hash_map* prefix_hash_map_create(size_t initial_capacity) {
   struct prefix_hash_map* map = cct_alloc(struct prefix_hash_map, 1);
   map->private.capacity = (initial_capacity) ? initial_capacity : 75;
-  map->private.hash_fn = hash_fn;
+  map->private.population = 0;
+  map->private.hash_func = hash_fn;
   map->private.rehash_threshold = .75;
-  map->private.equals_fn = equals_fn;
+  map->private.equals_func = equals_fn;
   map->private.data = cct_alloc(struct prefix_hash_map_pair, map->private.capacity);
   for (size_t i = 0; i < map->private.capacity; i++) {
     map->private.data[i].empty = true;
@@ -85,47 +107,119 @@ void prefix_hash_map_destroy(struct prefix_hash_map* map, void(*key_destroyer)(k
       }
     }
   }
+  free(map->private.data);
+  free(map);
 }
 
 bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type data) {
-  size_t data_index = map->private.hash_fn(key) % map->private.capacity;
-  size_t last_index = (data_index == 0) ? (map->private.capacity - 1) : data_index - 1;
-  struct prefix_hash_map_pair pair = map->private.data[data_index];
+  struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, key);
 
-  /* foobar ! */
-  /* while (!pair.empty && data_index != last_index) { */
-  /*   data_index = (data_index == (map->private.capacity - 1)) ? 0 : data_index + 1; */
-  /*   pair = map->private.data[data_index]; */
-  /* } */
+  if (pair == NULL) {
+    /* this should NEVER happen */
+    exit(-1);
+  }
 
-  /* if (data_index == last_index) */
+  if (pair->empty) {
+    pair->empty = false;
+    map->private.population++;
+    bool ok = prefix__private_hash_map_maybe_rehash(map);
+    if (!ok) {
+      /* couldn't rehash */
+    }
+  }
+
+  /* TODO: should user be responsible for cleaning old data before overwrite?  */
+  data_type old_data = pair->data;
+  pair->data = data;
+  pair->key = key;
 
   return false;
 }
 
 data_type prefix_hash_map_get(struct prefix_hash_map* map, key_type key) {
-  return 0;
+  struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, key);
+  return pair->data;
 }
 
 bool prefix_hash_map_contains(struct prefix_hash_map* map, key_type key) {
-  return false;
+  struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, key);
+  return !pair->empty;
 }
 
-data_type prefix_hash_map_remove(struct prefix_hash_map* map, key_type key) {
-  return 0;
+struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, key_type key) {
+  struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, key);
+  struct prefix_hash_map_pair removed_pair = *pair;
+
+  pair->empty = true;
+  pair->data = (data_type)NULL;
+  pair->key = (key_type)NULL;
+
+  return removed_pair;
 }
 
-bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data) {
-  return false;
-}
+/* bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data) { */
 
-key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data) {
-  return NULL;
-}
+/*   /\* maybe not do this... *\/ */
+
+/*   /\* for (size_t i = 0; i < map->private.capacity; i++) { *\/ */
+/*   /\*   if ((!map->private.data[i].empty) && map->private.data[i].data == data) { *\/ */
+
+/*   /\*   } *\/ */
+/*   /\* } *\/ */
+/*   data = data + 0; */
+/*   map = map + 0; */
+/*   return false; */
+/* } */
+
+/* key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data) { */
+
+/*   /\* maybe not do this... *\/ */
+/*   data = data + 0; */
+/*   map = map + 0; */
+/*   return NULL; */
+/* } */
 
 /* end implementation */
 
 /* private */
+
+bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map) {
+  if (((double)map->private.population) / ((double)map->private.capacity) >= map->private.rehash_threshold) {
+    /* do rehash here */
+    return false;
+  } else {
+    return true;
+  }
+}
+
+size_t prefix__private_hash_map_hash_index(struct prefix_hash_map* map, key_type key) {
+  return map->private.hash_func(key) % map->private.capacity;
+}
+
+struct prefix_hash_map_pair* prefix__private_hash_map_pair_for(struct prefix_hash_map* map, key_type key) {
+  size_t data_index = prefix__private_hash_map_hash_index(map, key);
+  size_t start_index = data_index;
+  struct prefix_hash_map_pair* pair = map->private.data + data_index;
+  bool found = false;
+
+  if (pair->empty || map->private.equals_func(key, pair->key)) {
+    return pair;
+  }
+
+  while (!found) {
+    data_index = (data_index == (map->private.capacity - 1)) ? 0 : data_index + 1;
+
+    if (data_index == start_index) {
+      return NULL;
+    }
+
+    pair = map->private.data + data_index;
+    if (pair->empty || map->private.equals_func(key, pair->key)) {
+      found = true;
+    }
+  }
+  return pair;
+}
 
 /* end private */
 
