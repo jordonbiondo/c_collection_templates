@@ -203,7 +203,6 @@ SUITE(dynamic_list) {
   RUN_TEST(dyn_list_contains_equal_test);
   RUN_TEST(dyn_list_remove_test);
   RUN_TEST(dyn_list_grow_test);
-
 }
 
 #endif
