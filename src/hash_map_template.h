@@ -130,7 +130,7 @@ bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type da
   }
 
   /* TODO: should user be responsible for cleaning old data before overwrite?  */
-  data_type old_data = pair->data;
+  /* data_type old_data = pair->data; */
   pair->data = data;
   pair->key = key;
 
@@ -186,7 +186,9 @@ struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, 
 
 bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map) {
   if (((double)map->private.population) / ((double)map->private.capacity) >= map->private.rehash_threshold) {
+
     /* do rehash here */
+
     return false;
   } else {
     return true;
