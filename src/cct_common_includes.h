@@ -20,6 +20,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #define cct_alloc(type, count) ((type*)(malloc(sizeof(type) * (count))))
 
