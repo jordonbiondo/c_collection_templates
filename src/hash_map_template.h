@@ -49,8 +49,6 @@ bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type da
 data_type prefix_hash_map_get(struct prefix_hash_map* map, key_type key);
 bool prefix_hash_map_contains(struct prefix_hash_map* map, key_type key);
 struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, key_type key);
-/* bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data); */
-/* key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data); */
 
 bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map);
 size_t prefix__private_hash_map_hash_index(struct prefix_hash_map* map, key_type key);
@@ -164,29 +162,6 @@ struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, 
 
   return removed_pair;
 }
-
-
-/* bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data) { */
-
-/*   /\* maybe not do this... *\/ */
-
-/*   /\* for (size_t i = 0; i < map->private.capacity; i++) { *\/ */
-/*   /\*   if ((!map->private.data[i].empty) && map->private.data[i].data == data) { *\/ */
-
-/*   /\*   } *\/ */
-/*   /\* } *\/ */
-/*   data = data + 0; */
-/*   map = map + 0; */
-/*   return false; */
-/* } */
-
-/* key_type prefix_hash_map_key_of(struct prefix_hash_map* map, data_type data) { */
-
-/*   /\* maybe not do this... *\/ */
-/*   data = data + 0; */
-/*   map = map + 0; */
-/*   return NULL; */
-/* } */
 
 /* end implementation */
 
