@@ -6,8 +6,8 @@
    - Dynamic List (ArrayList)
    - Circular Buffer
    - Linked List
-** Planned:
    - Hash Table
+** Planned:
    - Binary Search Tree
    - Thread-safe versions of each
 ** Usage
