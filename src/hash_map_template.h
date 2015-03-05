@@ -92,6 +92,9 @@ struct prefix_hash_map {
 
 struct prefix_hash_map* prefix_hash_map_create(size_t initial_capacity) {
   struct prefix_hash_map* map = cct_alloc(struct prefix_hash_map, 1);
+  if (map == NULL) {
+    return NULL;
+  }
   map->private.capacity = (initial_capacity) ? initial_capacity : 75;
   map->private.population = 0;
   map->private.hash_func = hash_fn;

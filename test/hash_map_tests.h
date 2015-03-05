@@ -45,13 +45,31 @@ bool test_str_eq_func(char* a, char* b) {
 }
 
 
-define_hash_map(char*, int, my, test_str_hash_func, test_str_eq_func)
+define_hash_map(char*, int, test, test_str_hash_func, test_str_eq_func)
 
-typedef struct my_hash_map hash;
-typedef struct my_hash_map_pair hash_pair;
+typedef struct test_hash_map hash_t;
+typedef struct test_hash_map_pair hash_pair_t;
 
 TEST prefix_hash_map_create () {
-  SKIP();
+  hash_t* hash;
+
+  with_spoofed_oom {
+    hash = test_hash_map_create(0);
+    ASSERT(hash == NULL);
+  }
+
+  hash = test_hash_map_create(0);
+  ASSERT(hash != NULL);
+  ASSERT(test_hash_map_count(hash) == 0);
+  ASSERT(hash->private.capacity > 0);
+  ASSERT(hash->private.equals_func == &test_str_eq_func);
+  ASSERT(hash->private.hash_func == &test_str_hash_func);
+  ASSERT(hash->private.hash_func == &test_str_hash_func);
+  ASSERT(hash->private.rehash_threshold > 0 && hash->private.rehash_threshold < 1);
+  ASSERT(hash->private.rehash_threshold > 0 && hash->private.rehash_threshold < 1);
+  ASSERT(hash->private.data != NULL);
+  test_hash_map_destroy(hash, NULL, NULL);
+  PASS();
 }
 
 TEST prefix_hash_map_destroy () {
