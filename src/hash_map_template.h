@@ -45,6 +45,7 @@ const double CCT_HASH_GROWTH_SCALE =  1.7;
 struct prefix_hash_map;
 struct prefix_hash_map* prefix_hash_map_create(size_t initial_capacity);
 void prefix_hash_map_destroy(struct prefix_hash_map* map, void(*key_destroyer)(key_type), void(*data_destroyer)(data_type));
+size_t prefix_hash_map_count(struct prefix_hash_map* map);
 bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type data);
 data_type prefix_hash_map_get(struct prefix_hash_map* map, key_type key);
 bool prefix_hash_map_contains(struct prefix_hash_map* map, key_type key);
@@ -117,6 +118,10 @@ void prefix_hash_map_destroy(struct prefix_hash_map* map, void(*key_destroyer)(k
   }
   free(map->private.data);
   free(map);
+}
+
+size_t prefix_hash_map_count(struct prefix_hash_map* map) {
+  return map->private.population;
 }
 
 bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type data) {
