@@ -183,6 +183,10 @@ bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map) {
   size_t pre_rehash_population = map->private.population;
   struct prefix_hash_map_pair* pre_rehash_tenants = cct_alloc(struct prefix_hash_map_pair, pre_rehash_population);
 
+  if (pre_rehash_tenants == NULL) {
+    return false;
+  }
+
   size_t pos = 0;
   for (size_t i = 0; i < map->private.capacity; i++) {
     if (!map->private.data[i].empty) {
