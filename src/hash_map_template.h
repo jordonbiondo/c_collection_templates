@@ -32,10 +32,10 @@ const double CCT_HASH_GROWTH_SCALE =  1.7;
 
 /* Loop over every key value pair in map, It is NOT safe to modify the map in the body.
  */
-#define hash_map_for_each(prefix, map_var, key_type, key_var, data_type, value_var)                 \
+#define hash_map_for_each(prefix, map_var, key_type, key_var, data_type, value_var) \
   for (size_t __hash_for_each_i = 0; __hash_for_each_i < map_var->private.capacity; __hash_for_each_i++) \
     for (struct prefix##_hash_map_pair pair = map_var->private.data[__hash_for_each_i]; !pair.empty; pair.empty = true) \
-      for (key_type key_var = pair.key; key != (key_type)0; key = (key_type)0)                      \
+      for (key_type key_var = pair.key; key != (key_type)0; key = (key_type)0) \
         for (data_type value_var = pair.data; value != (data_type)0; value = (data_type)0)
 
 // MACRO_DEFINE define_hash_map(key_type, data_type, prefix, hash_fn, equals_fn)
@@ -163,10 +163,8 @@ bool prefix_hash_map_contains(struct prefix_hash_map* map, key_type key) {
 struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, key_type key) {
   struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, key);
   struct prefix_hash_map_pair removed_pair = *pair;
-
-  pair->empty = true;
-  pair->data = (data_type)0;
-  pair->key = (key_type)0;
+  struct prefix_hash_map_pair empty_pair = {.empty = true};
+  *pair = empty_pair;
 
   return removed_pair;
 }
@@ -206,8 +204,9 @@ bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map) {
   map->private.capacity = new_capacity;
   map->private.population = 0;
 
+  struct prefix_hash_map_pair empty = {.empty = true};
   for (size_t i = 0; i < map->private.capacity; i++) {
-    map->private.data[i].empty = true;
+    map->private.data[i] = empty;
   }
 
   for (size_t i = 0; i < pre_rehash_population; i++) {
