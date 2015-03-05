@@ -28,6 +28,16 @@ unsigned int hash_fn(key_type key);
 bool equals_fn(key_type a, key_type b);
 #endif
 
+const double CCT_HASH_GROWTH_SCALE =  1.7;
+
+/* Loop over every key value pair in map, It is NOT safe to modify the map in the body.
+ */
+#define hash_map_for_each(prefix, map_var, key_type, key_var, data_type, value_var)                 \
+  for (size_t __hash_for_each_i = 0; __hash_for_each_i < map_var->private.capacity; __hash_for_each_i++) \
+    for (struct prefix##_hash_map_pair pair = map_var->private.data[__hash_for_each_i]; !pair.empty; pair.empty = true) \
+      for (key_type key_var = pair.key; key != (key_type)0; key = (key_type)0)                      \
+        for (data_type value_var = pair.data; value != (data_type)0; value = (data_type)0)
+
 // MACRO_DEFINE define_hash_map(key_type, data_type, prefix, hash_fn, equals_fn)
 
 /* header */
