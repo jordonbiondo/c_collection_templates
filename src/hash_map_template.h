@@ -123,10 +123,6 @@ bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type da
   if (pair->empty) {
     pair->empty = false;
     map->private.population++;
-    bool ok = prefix__private_hash_map_maybe_rehash(map);
-    if (!ok) {
-      /* couldn't rehash */
-    }
   }
 
   /* TODO: should user be responsible for cleaning old data before overwrite?  */
@@ -134,7 +130,8 @@ bool prefix_hash_map_put(struct prefix_hash_map* map, key_type key, data_type da
   pair->data = data;
   pair->key = key;
 
-  return false;
+  bool ok = prefix__private_hash_map_maybe_rehash(map);
+  return ok;
 }
 
 data_type prefix_hash_map_get(struct prefix_hash_map* map, key_type key) {
@@ -152,11 +149,12 @@ struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, 
   struct prefix_hash_map_pair removed_pair = *pair;
 
   pair->empty = true;
-  pair->data = (data_type)NULL;
-  pair->key = (key_type)NULL;
+  pair->data = (data_type)0;
+  pair->key = (key_type)0;
 
   return removed_pair;
 }
+
 
 /* bool prefix_hash_map_contains_data(struct prefix_hash_map* map, data_type data) { */
 
@@ -185,14 +183,48 @@ struct prefix_hash_map_pair prefix_hash_map_remove(struct prefix_hash_map* map, 
 /* private */
 
 bool prefix__private_hash_map_maybe_rehash(struct prefix_hash_map* map) {
-  if (((double)map->private.population) / ((double)map->private.capacity) >= map->private.rehash_threshold) {
-
-    /* do rehash here */
-
-    return false;
-  } else {
+  if (((double)map->private.population) / ((double)map->private.capacity) < map->private.rehash_threshold) {
     return true;
   }
+
+  size_t pre_rehash_population = map->private.population;
+  struct prefix_hash_map_pair* pre_rehash_tenants = cct_alloc(struct prefix_hash_map_pair, pre_rehash_population);
+
+  size_t pos = 0;
+  for (size_t i = 0; i < map->private.capacity; i++) {
+    if (!map->private.data[i].empty) {
+      pre_rehash_tenants[pos++] = map->private.data[i];
+    }
+  }
+
+  size_t new_capacity = map->private.capacity * CCT_HASH_GROWTH_SCALE;
+  struct prefix_hash_map_pair* new_data = realloc(map->private.data, sizeof(struct prefix_hash_map_pair) * new_capacity);
+
+  if (new_data == NULL) {
+    free(pre_rehash_tenants);
+    return false;
+  }
+
+  map->private.data = new_data;
+  map->private.capacity = new_capacity;
+  map->private.population = 0;
+
+  for (size_t i = 0; i < map->private.capacity; i++) {
+    map->private.data[i].empty = true;
+  }
+
+  for (size_t i = 0; i < pre_rehash_population; i++) {
+    struct prefix_hash_map_pair* pair = prefix__private_hash_map_pair_for(map, pre_rehash_tenants[i].key);
+    if (pair == NULL) {
+      printf("- Fatal Error: \n- defined hash must not have grown, it is full! Dying...\n");
+      exit(-1);
+    }
+
+    *pair = pre_rehash_tenants[i];
+  }
+  map->private.population = pre_rehash_population;
+  free(pre_rehash_tenants);
+  return true;
 }
 
 size_t prefix__private_hash_map_hash_index(struct prefix_hash_map* map, key_type key) {
