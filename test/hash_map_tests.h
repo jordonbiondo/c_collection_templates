@@ -138,14 +138,14 @@ TEST prefix_hash_map_put () {
 TEST prefix_hash_map_get () {
   hash_t* hash = test_hash_map_create(5);
 
-  for (char i = 0; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char* s = malloc(sizeof(char) * 2);
     s[0] = i;
     s[1] = '\0';
     test_hash_map_put(hash, s, i);
   }
 
-  for (char i = 0; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     ASSERT(test_hash_map_get(hash, s) == i);
   }
@@ -159,29 +159,29 @@ TEST prefix_hash_map_get () {
 TEST prefix_hash_map_contains () {
   hash_t* hash = test_hash_map_create(5);
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char* s = malloc(sizeof(char) * 2);
     s[0] = i;
     s[1] = '\0';
     test_hash_map_put(hash, s, i);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     ASSERT(test_hash_map_contains(hash, s) == true);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, i, '\0'};
     ASSERT(test_hash_map_contains(hash, s) == false);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     test_hash_map_remove(hash, s);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     ASSERT(test_hash_map_contains(hash, s) == false);
   }
@@ -194,14 +194,14 @@ TEST prefix_hash_map_contains () {
 TEST prefix_hash_map_remove () {
   hash_t* hash = test_hash_map_create(5);
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char* s = malloc(sizeof(char) * 2);
     s[0] = i;
     s[1] = '\0';
     test_hash_map_put(hash, s, i);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     ASSERT(test_hash_map_contains(hash, s) == true);
     hash_pair_t p = test_hash_map_remove(hash, s);
@@ -211,12 +211,12 @@ TEST prefix_hash_map_remove () {
     ASSERT(test_hash_map_contains(hash, s) == false);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     ASSERT(test_hash_map_contains(hash, s) == false);
   }
 
-  for (char i = 1; i < 100; i++) {
+  for (char i = 'a'; i < 'z'; i++) {
     char s[] = {i, '\0'};
     hash_pair_t p = test_hash_map_remove(hash, s);
     ASSERT(p.empty);
