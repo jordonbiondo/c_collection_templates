@@ -45,9 +45,23 @@ TEST cbuffer_create_test() {
   PASS();
 }
 
+int destroyed_int_sum = 0;
+int destroyed_int_count = 0;
+
+void cbuffer_int_destroyer(int a) {
+  destroyed_int_sum += a;
+  destroyed_int_count++;
 }
+
 TEST cbuffer_destroy_test() {
-  SKIP();
+  cbuffer* buffer = test_cbuffer_create(10, -1);
+  test_cbuffer_enqueue(buffer, 100);
+  test_cbuffer_enqueue(buffer, 10);
+  test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_destroy(buffer, cbuffer_int_destroyer);
+  ASSERT(destroyed_int_count == 3);
+  ASSERT(destroyed_int_sum == 111);
+  PASS();
 }
 TEST cbuffer_empty_test() {
   SKIP();

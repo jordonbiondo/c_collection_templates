@@ -72,8 +72,12 @@ struct prefix_cbuffer * prefix_cbuffer_create(size_t capacity, dummy_type defaul
 
 void prefix_cbuffer_destroy(struct prefix_cbuffer * buffer, void(*element_destroyer)(dummy_type)) {
   if (element_destroyer) {
-    for (size_t i = 0; i < buffer->capacity; i++) {
-      element_destroyer(buffer->values[i]);
+    size_t pos = buffer->private.get_position;
+    for (size_t i = 0; i < buffer->population; i++) {
+      element_destroyer(buffer->values[pos++]);
+      if (pos == buffer->capacity) {
+        pos = 0;
+      }
     }
   }
   free(buffer->values);
