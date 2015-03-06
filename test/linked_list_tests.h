@@ -17,7 +17,6 @@
 #ifndef LINKED_LIST_TESTS_linked_list_H
 #define LINKED_LIST_TESTS_linked_list_H
 
-#include "lib/greatest.h"
 #include "cct_test_common.h"
 
 define_linked_list(int, test)

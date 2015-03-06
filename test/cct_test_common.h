@@ -1,6 +1,7 @@
 #ifndef CCT_TEST_COMMON_H
 #define CCT_TEST_COMMON_H
 
+#include "lib/greatest.h"
 #include "../collection_templates.h"
 
 bool spoof_oom = false;

@@ -17,9 +17,7 @@
 #ifndef HASH_MAP_TESTS_H
 #define HASH_MAP_TESTS_H
 
-#include "lib/greatest.h"
 #include "cct_test_common.h"
-#include "../collection_templates.h"
 
 unsigned int test_str_hash_func(char* str) {
   unsigned int val = 0;

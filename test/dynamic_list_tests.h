@@ -17,9 +17,7 @@
 #ifndef DYNAMIC_LIST_TESTS_H
 #define DYNAMIC_LIST_TESTS_H
 
-#include "lib/greatest.h"
 #include "cct_test_common.h"
-#include "../collection_templates.h"
 
 define_dyn_list(int, test)
 
