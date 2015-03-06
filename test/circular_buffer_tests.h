@@ -54,32 +54,176 @@ void cbuffer_int_destroyer(int a) {
 }
 
 TEST cbuffer_destroy_test() {
-  cbuffer* buffer = test_cbuffer_create(10, -1);
-  test_cbuffer_enqueue(buffer, 100);
-  test_cbuffer_enqueue(buffer, 10);
+  cbuffer* buffer = test_cbuffer_create(5, -1);
   test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_enqueue(buffer, 2);
+  test_cbuffer_enqueue(buffer, 3);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_enqueue(buffer, 10);
+  test_cbuffer_enqueue(buffer, 100);
   test_cbuffer_destroy(buffer, cbuffer_int_destroyer);
   ASSERT(destroyed_int_count == 3);
   ASSERT(destroyed_int_sum == 111);
+  destroyed_int_sum = 0;
+  destroyed_int_count = 0;
   PASS();
 }
+
 TEST cbuffer_empty_test() {
-  SKIP();
+  cbuffer* buffer = test_cbuffer_create(5, -1);
+  ASSERT(test_cbuffer_empty(buffer) == true);
+  test_cbuffer_enqueue(buffer, 1);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+  test_cbuffer_enqueue(buffer, 2);
+  test_cbuffer_enqueue(buffer, 3);
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_empty(buffer) == true);
+  test_cbuffer_enqueue(buffer, 1);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+  test_cbuffer_enqueue(buffer, 10);
+  test_cbuffer_enqueue(buffer, 100);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_empty(buffer) == true);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
+
 TEST cbuffer_full_test() {
-  SKIP();
+  size_t capacity = 5;
+  cbuffer* buffer = test_cbuffer_create(capacity, -1);
+
+  test_cbuffer_enqueue(buffer, 0);
+  test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_enqueue(buffer, 2);
+  test_cbuffer_enqueue(buffer, 3);
+  ASSERT(test_cbuffer_full(buffer) == false);
+
+  test_cbuffer_enqueue(buffer, 1);
+  ASSERT(test_cbuffer_full(buffer) == true);
+
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_full(buffer) == false);
+
+  test_cbuffer_pop(buffer);
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_full(buffer) == false);
+
+  test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_enqueue(buffer, 2);
+  test_cbuffer_enqueue(buffer, 3);
+  ASSERT(test_cbuffer_full(buffer) == true);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
+
 TEST cbuffer_enqeue_test() {
-  SKIP();
+  size_t capacity = 5;
+  cbuffer* buffer = test_cbuffer_create(capacity, -1);
+  ASSERT(test_cbuffer_enqueue(buffer, 1) == true);
+  ASSERT(test_cbuffer_enqueue(buffer, 2) == true);
+  ASSERT(test_cbuffer_enqueue(buffer, 3) == true);
+  ASSERT(test_cbuffer_enqueue(buffer, 4) == true);
+  ASSERT(test_cbuffer_enqueue(buffer, 5) == true);
+  ASSERT(test_cbuffer_enqueue(buffer, 99) == false);
+
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_enqueue(buffer, 100) == true);
+
+  ASSERT(test_cbuffer_pop(buffer) == 2);
+  ASSERT(test_cbuffer_pop(buffer) == 3);
+  ASSERT(test_cbuffer_pop(buffer) == 4);
+  ASSERT(test_cbuffer_pop(buffer) == 5);
+  ASSERT(test_cbuffer_pop(buffer) == 100);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
+
 TEST cbuffer_pop_test() {
-  SKIP();
+  size_t capacity = 5;
+  int default_value = -1;
+  cbuffer* buffer = test_cbuffer_create(capacity, default_value);
+
+  ASSERT(test_cbuffer_pop(buffer) == default_value);
+
+  test_cbuffer_enqueue(buffer, 1);
+  test_cbuffer_enqueue(buffer, 2);
+  test_cbuffer_enqueue(buffer, 3);
+  test_cbuffer_enqueue(buffer, 4);
+  test_cbuffer_enqueue(buffer, 5);
+
+  ASSERT(test_cbuffer_pop(buffer) == 1);
+  ASSERT(test_cbuffer_pop(buffer) == 2);
+  ASSERT(test_cbuffer_pop(buffer) == 3);
+  ASSERT(test_cbuffer_pop(buffer) == 4);
+  ASSERT(test_cbuffer_pop(buffer) == 5);
+  ASSERT(test_cbuffer_pop(buffer) == default_value);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
+
 TEST cbuffer_peek_test() {
-  SKIP();
+  size_t capacity = 5;
+  int default_value = -1;
+  cbuffer* buffer = test_cbuffer_create(capacity, default_value);
+
+  ASSERT(test_cbuffer_peek(buffer) == default_value);
+
+  test_cbuffer_enqueue(buffer, 100);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+  ASSERT(test_cbuffer_peek(buffer) == 100);
+  ASSERT(test_cbuffer_peek(buffer) == 100);
+  ASSERT(test_cbuffer_empty(buffer) == false);
+
+  test_cbuffer_enqueue(buffer, 200);
+  ASSERT(buffer->population == 2);
+  ASSERT(test_cbuffer_peek(buffer) == 100);
+  ASSERT(test_cbuffer_peek(buffer) == 100);
+  ASSERT(buffer->population == 2);
+
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_peek(buffer) == 200);
+  ASSERT(test_cbuffer_peek(buffer) == 200);
+  ASSERT(buffer->population == 1);
+
+  test_cbuffer_pop(buffer);
+  ASSERT(test_cbuffer_peek(buffer) == default_value);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
+
 TEST cbuffer_capacity_test() {
-  SKIP();
+  size_t capacity = 5;
+  int default_value = -1;
+  cbuffer* buffer = test_cbuffer_create(capacity, default_value);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+  test_cbuffer_enqueue(buffer, 1);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+  test_cbuffer_enqueue(buffer, 2);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+  test_cbuffer_pop(buffer);
+  test_cbuffer_peek(buffer);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+  test_cbuffer_empty(buffer);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+  test_cbuffer_full(buffer);
+  ASSERT(test_cbuffer_capacity(buffer) == capacity);
+
+  test_cbuffer_destroy(buffer, NULL);
+  PASS();
 }
 
 SUITE(circular_buffer) {
