@@ -16,3 +16,6 @@ serve_docs:
 
 tests: collection_templates.h
 	make -C test all
+
+clean:
+	rm -f collection_templates.h && make -C test clean

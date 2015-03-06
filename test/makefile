@@ -10,3 +10,6 @@ coverage:
 
 run_unit_tests: unit_tests
 	./cct_tests -v
+
+clean:
+	rm -rf *.gcda *.gcdo *.gcno *.gcov cct_tests cct_coverage_tests *.dSYM
