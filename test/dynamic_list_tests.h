@@ -168,23 +168,23 @@ TEST dyn_list_index_of_test() {
 }
 
 TEST dyn_list_contains_test() {
-  SKIP();
+  PENDING();
 }
 
 TEST dyn_list_index_of_equal_test() {
-  SKIP();
+  PENDING();
 }
 
 TEST dyn_list_contains_equal_test() {
-  SKIP();
+  PENDING();
 }
 
 TEST dyn_list_remove_test() {
-  SKIP();
+  PENDING();
 }
 
 TEST dyn_list_grow_test() {
-  SKIP();
+  PENDING();
 }
 
 SUITE(dynamic_list) {

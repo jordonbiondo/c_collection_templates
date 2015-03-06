@@ -13,4 +13,6 @@ bool spoof_oom = false;
 
 #define with_spoofed_oom for(spoof_oom = true; spoof_oom; spoof_oom = false)
 
+#define PENDING() SKIPm("TEST IS PENDING")
+
 #endif
