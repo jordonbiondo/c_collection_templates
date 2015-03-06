@@ -19,26 +19,7 @@
 
 #include "cct_test_common.h"
 
-unsigned int test_str_hash_func(char* str) {
-  unsigned int val = 0;
-  int times = sizeof(val) / sizeof(char);
-  int offset = 0;
-  while (*str) {
-    val ^= ((unsigned int)*str << offset * 8);
-    offset++;
-    if (offset == times) {
-      offset = 0;
-    }
-    str++;
-  }
-  return val;
-}
-
-bool test_str_eq_func(char* a, char* b) {
-  return strcmp(a, b) == 0;
-}
-
-define_hash_map(char*, int, test, test_str_hash_func, test_str_eq_func)
+define_hash_map(char*, int, test, CCT_DEFAULT_STR_HASH, CCT_DEFAULT_STR_EQ)
 
 typedef struct test_hash_map hash_t;
 typedef struct test_hash_map_pair hash_pair_t;
@@ -55,9 +36,8 @@ TEST prefix_hash_map_create () {
   ASSERT(hash != NULL);
   ASSERT(test_hash_map_count(hash) == 0);
   ASSERT(hash->private.capacity > 0);
-  ASSERT(hash->private.equals_func == &test_str_eq_func);
-  ASSERT(hash->private.hash_func == &test_str_hash_func);
-  ASSERT(hash->private.hash_func == &test_str_hash_func);
+  ASSERT(hash->private.equals_func == &CCT_DEFAULT_STR_EQ);
+  ASSERT(hash->private.hash_func == &CCT_DEFAULT_STR_HASH);
   ASSERT(hash->private.rehash_threshold > 0 && hash->private.rehash_threshold < 1);
   ASSERT(hash->private.rehash_threshold > 0 && hash->private.rehash_threshold < 1);
   ASSERT(hash->private.data != NULL);

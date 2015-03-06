@@ -24,9 +24,28 @@
 #ifndef COLLECTION_TEMPLATES_COMPILED_HEADER
 typedef char* key_type;
 typedef int data_type;
-unsigned int hash_fn(key_type key);
+size_t hash_fn(key_type key);
 bool equals_fn(key_type a, key_type b);
 #endif
+
+size_t CCT_DEFAULT_STR_HASH(char* str) {
+  size_t val = 0;
+  int offset = 0;
+  while (*str) {
+    size_t t = *str;
+    val ^= (t << (offset * 8));
+    offset++;
+    if (offset == sizeof(size_t)) {
+      offset = 0;
+    }
+    str++;
+  }
+  return val;
+}
+
+bool CCT_DEFAULT_STR_EQ(char* a, char* b) {
+  return strcmp(a, b) == 0;
+}
 
 const double CCT_HASH_GROWTH_SCALE =  1.7;
 
@@ -61,9 +80,9 @@ struct prefix_hash_map_pair* prefix__private_hash_map_pair_for(struct prefix_has
 
 struct prefix_hash_map {
   struct prefix_hash_map_private_data {
-    /* Hash function mapping a key to a semi-unique(ish) unsigned int.
+    /* Hash function mapping a key to a semi-unique(ish) size_t .
      */
-    unsigned int(*hash_func)(key_type);
+    size_t (*hash_func)(key_type);
     /* equals function that determines if a key is equal to another
      */
     bool (*equals_func)(key_type, key_type);
