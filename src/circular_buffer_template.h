@@ -52,9 +52,18 @@ struct prefix_cbuffer {
 
 struct prefix_cbuffer * prefix_cbuffer_create(size_t capacity, dummy_type default_value) {
   struct prefix_cbuffer* buffer = cct_alloc(struct prefix_cbuffer, 1);
+  if (buffer == NULL) {
+    return NULL;
+  }
   buffer->capacity = capacity;
   buffer->default_value = default_value;
   buffer->values = cct_alloc(dummy_type, capacity);
+
+  if (buffer->values == NULL) {
+    free(buffer);
+    return NULL;
+  }
+
   buffer->private.get_position = 0;
   buffer->private.put_position = 0;
   buffer->population = 0;

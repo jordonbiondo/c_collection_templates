@@ -23,8 +23,28 @@
 
 define_circular_buffer(int, test)
 
+typedef struct test_cbuffer cbuffer;
+
 TEST cbuffer_create_test() {
-  SKIP();
+  size_t capacity = 10;
+  int default_value = -1;
+
+  cbuffer* buffer = test_cbuffer_create(capacity, default_value);
+  ASSERT(buffer != NULL);
+  ASSERT(buffer->values != NULL);
+  ASSERT(buffer->capacity == capacity);
+  ASSERT(buffer->default_value == default_value);
+  ASSERT(buffer->population == 0);
+  test_cbuffer_destroy(buffer, NULL);
+
+  with_spoofed_oom {
+    cbuffer* buffer2 = test_cbuffer_create(capacity, default_value);
+    ASSERT(buffer2 == NULL);
+  }
+
+  PASS();
+}
+
 }
 TEST cbuffer_destroy_test() {
   SKIP();
