@@ -35,12 +35,6 @@ dummy_type prefix_dyn_list_set(struct prefix_dyn_list* list, unsigned index, dum
 bool prefix_dyn_list_add(struct prefix_dyn_list* list, dummy_type value);
 
 bool prefix_dyn_list_insert(struct prefix_dyn_list* list, unsigned index, dummy_type value);
-bool prefix_dyn_list_push_front(struct prefix_dyn_list* list, dummy_type value);
-bool prefix_dyn_list_push_back(struct prefix_dyn_list* list, dummy_type value);
-dummy_type prefix_dyn_list_pop_front(struct prefix_dyn_list* list);
-dummy_type prefix_dyn_list_pop_back(struct prefix_dyn_list* list);
-dummy_type prefix_dyn_list_peek_back(struct prefix_dyn_list* list);
-dummy_type prefix_dyn_list_peek_front(struct prefix_dyn_list* list);
 
 long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
 bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
@@ -183,35 +177,6 @@ bool prefix_dyn_list_insert(struct prefix_dyn_list* list, unsigned index, dummy_
   return true;
 }
 
-bool prefix_dyn_list_push_front(struct prefix_dyn_list* list, dummy_type value) {
-  return prefix_dyn_list_insert(list, 0, value);
-}
-
-/* Push a value onto the back of the dynamic list
- * @value the value to append to the list
- *
- * Push a value onto the back of the dynamic list
- * This is just a wrapper for <prefix_dyn_list_add>
- */
-bool prefix_dyn_list_push_back(struct prefix_dyn_list* list, dummy_type value) {
-  return prefix_dyn_list_add(list, value);
-}
-
-dummy_type prefix_dyn_list_pop_front(struct prefix_dyn_list* list) {
-  return prefix_dyn_list_remove(list, 0);
-}
-
-dummy_type prefix_dyn_list_pop_back(struct prefix_dyn_list* list) {
-  return prefix_dyn_list_remove(list, list->size - 1);
-}
-
-dummy_type prefix_dyn_list_peek_back(struct prefix_dyn_list* list) {
-  return prefix_dyn_list_get(list, list->size - 1);
-}
-
-dummy_type prefix_dyn_list_peek_front(struct prefix_dyn_list* list) {
-  return prefix_dyn_list_get(list, 0);
-}
 
 /* Return the index of the first element in a list == to a given value
  * @value the value to find in the list
