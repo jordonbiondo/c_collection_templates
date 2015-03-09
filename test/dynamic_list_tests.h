@@ -185,7 +185,33 @@ TEST dyn_list_index_of_test() {
 }
 
 TEST dyn_list_contains_test() {
-  PENDING();
+  tdl* list = test_dyn_list_create(0);
+
+  test_dyn_list_add(list, 100);
+  test_dyn_list_add(list, 10);
+  test_dyn_list_add(list, 1);
+  ASSERT(test_dyn_list_contains(list, 100) == true);
+  ASSERT(test_dyn_list_contains(list, 10) == true);
+  ASSERT(test_dyn_list_contains(list, 1) == true);
+  ASSERT(test_dyn_list_contains(list, 222) == false);
+
+  test_dyn_list_set(list, 0, 99);
+  test_dyn_list_set(list, 1, 999);
+  test_dyn_list_set(list, 2, 9999);
+  ASSERT(test_dyn_list_contains(list, 100) == false);
+  ASSERT(test_dyn_list_contains(list, 10) == false);
+  ASSERT(test_dyn_list_contains(list, 1) == false);
+  ASSERT(test_dyn_list_contains(list, 99) == true);
+  ASSERT(test_dyn_list_contains(list, 999) == true);
+  ASSERT(test_dyn_list_contains(list, 9999) == true);
+
+  test_dyn_list_remove(list, 0);
+  ASSERT(test_dyn_list_contains(list, 99) == false);
+
+  test_dyn_list_destroy(list, NULL);
+  PASS();
+}
+
 }
 
 TEST dyn_list_index_of_equal_test() {
