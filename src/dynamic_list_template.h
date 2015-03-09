@@ -237,7 +237,7 @@ long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type val
  * @return true if list contains an element such that equals(value, element) returns true.
  */
 bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type)) {
-  return prefix_dyn_list_index_of_equal(list, value, equals) > 0;
+  return prefix_dyn_list_index_of_equal(list, value, equals) >= 0;
 }
 
 
