@@ -38,8 +38,8 @@ bool prefix_dyn_list_insert(struct prefix_dyn_list* list, unsigned index, dummy_
 
 long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value);
 bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
-long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
-bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type)));
+long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type));
+bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type));
 dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index);
 bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase);
 
@@ -219,7 +219,7 @@ bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value) {
  *
  * @return the first index of an element == to value in list or -1 if value is not found.
  */
-long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type)) {
   for (size_t i = 0; i < list->size; i++) {
     if (equals(value, list->data[i])) {
       return i;
@@ -236,7 +236,7 @@ long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type val
  *
  * @return true if list contains an element such that equals(value, element) returns true.
  */
-bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals(dummy_type, dummy_type))) {
+bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type)) {
   return prefix_dyn_list_index_of_equal(list, value, equals) > 0;
 }
 
