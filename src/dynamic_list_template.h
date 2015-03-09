@@ -204,7 +204,7 @@ long prefix_dyn_list_index_of(struct prefix_dyn_list* list, dummy_type value) {
  * @return true if list contains an element == to the given value
  */
 bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value) {
-  return prefix_dyn_list_index_of(list, value) > 0;
+  return prefix_dyn_list_index_of(list, value) >= 0;
 }
 
 /* Return the index of the first element in a list where a equallity function returns true.
