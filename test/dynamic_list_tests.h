@@ -212,10 +212,32 @@ TEST dyn_list_contains_test() {
   PASS();
 }
 
+bool mod_10_equals(int a, int b) {
+  return (a % 10) == (b % 10);
 }
 
 TEST dyn_list_index_of_equal_test() {
-  PENDING();
+  tdl* list = test_dyn_list_create(0);
+
+  test_dyn_list_add(list, 19);
+  test_dyn_list_add(list, 18);
+  test_dyn_list_add(list, 17);
+  test_dyn_list_add(list, 29);
+
+  ASSERT(test_dyn_list_index_of_equal(list, 19, mod_10_equals) == 0);
+  ASSERT(test_dyn_list_index_of_equal(list, 99, mod_10_equals) == 0);
+  ASSERT(test_dyn_list_index_of_equal(list, 88, mod_10_equals) == 1);
+  ASSERT(test_dyn_list_index_of_equal(list, 77, mod_10_equals) == 2);
+  ASSERT(test_dyn_list_index_of_equal(list, 29, mod_10_equals) == 0);
+
+  ASSERT(test_dyn_list_index_of_equal(list, 11, mod_10_equals) == -1);
+  ASSERT(test_dyn_list_index_of_equal(list, 22, mod_10_equals) == -1);
+
+  test_dyn_list_remove(list, 0);
+  ASSERT(test_dyn_list_index_of_equal(list, 99, mod_10_equals) == 2);
+
+  test_dyn_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST dyn_list_contains_equal_test() {
