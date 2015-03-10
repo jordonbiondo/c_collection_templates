@@ -265,7 +265,19 @@ TEST dyn_list_contains_equal_test() {
 }
 
 TEST dyn_list_remove_test() {
-  PENDING();
+  tdl* list = test_dyn_list_create(0);
+  test_dyn_list_add(list, 19);
+  test_dyn_list_add(list, 18);
+  test_dyn_list_add(list, 17);
+  test_dyn_list_add(list, 16);
+  ASSERT(test_dyn_list_length(list) == 4);
+  ASSERT(test_dyn_list_remove(list, 0) == 19);
+  ASSERT(test_dyn_list_remove(list, 0) == 18);
+  ASSERT(test_dyn_list_remove(list, 0) == 17);
+  ASSERT(test_dyn_list_remove(list, 0) == 16);
+  ASSERT(test_dyn_list_length(list) == 0);
+  test_dyn_list_destroy(list, NULL);
+  PASS();
 }
 
 TEST dyn_list_grow_test() {
