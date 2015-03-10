@@ -281,7 +281,21 @@ TEST dyn_list_remove_test() {
 }
 
 TEST dyn_list_grow_test() {
-  PENDING();
+  tdl* list = test_dyn_list_create(10);
+  ASSERT(list->private.real_size == 10);
+  test_dyn_list_grow(list, 10);
+  ASSERT(list->private.real_size == 20);
+
+  with_spoofed_oom {
+    // can insert 10 without need to grow
+    for (int i = 0; i < 10; i++) {
+      test_dyn_list_add(list, i);
+    }
+  }
+  ASSERT(list->size == 10);
+  ASSERT(list->private.real_size == 20);
+
+  PASS();
 }
 
 SUITE(dynamic_list) {
