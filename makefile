@@ -17,5 +17,8 @@ serve_docs:
 tests: collection_templates.h
 	make -C test all
 
+unit_tests: collection_templates.h
+	make -C test run_unit_tests
+
 clean:
 	rm -f collection_templates.h && make -C test clean
