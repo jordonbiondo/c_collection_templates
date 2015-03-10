@@ -272,7 +272,7 @@ dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index) 
  * @return true if allocation succeeds, false if not
  */
 bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase) {
-  size_t new_size = list->size + pre_allocated_size_increase;
+  size_t new_size = list->private.real_size + pre_allocated_size_increase;
   return prefix__private_dyn_list_grow_internal(list, new_size);
 }
 

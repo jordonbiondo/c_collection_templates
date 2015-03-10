@@ -295,6 +295,7 @@ TEST dyn_list_grow_test() {
   ASSERT(list->size == 10);
   ASSERT(list->private.real_size == 20);
 
+  test_dyn_list_destroy(list, NULL);
   PASS();
 }
 
