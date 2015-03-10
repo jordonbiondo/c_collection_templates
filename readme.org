@@ -35,7 +35,7 @@
 #+END_SRC
 
 ** Documentation
-   Generated documentation can be seen here:
+   Generated documentation can be seen here: (out of date)
 
    http://jordonbiondo.github.io/c_collection_templates/
 
