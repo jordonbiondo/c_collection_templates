@@ -1,7 +1,7 @@
 * C Collection Templates
-  A collection of macros that can be used to define entire collection types and functions
+  A collection of template style macros that can be used to define typed collections and their functions
 
-  For instance, =define_dyn_list(int, cool_int)= would define functions and types for a dynamically allocated int list. All dynamic int list specific types and functions would be prefixed with cool_int so you could use the macro over and over for lots of different types.
+  For instance, =define_dyn_list(int, cool_int)= would define functions and types for a dynamically allocated int list. All dynamic int list specific types and functions would be prefixed with cool_int.
 ** Currently Implemented Collections
    - Dynamic List (ArrayList)
    - Circular Buffer
