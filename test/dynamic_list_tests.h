@@ -280,6 +280,25 @@ TEST dyn_list_remove_test() {
   PASS();
 }
 
+TEST dyn_list_clear_test () {
+  tdl* list = test_dyn_list_create(10);
+  destroy_test_sum = 0;
+  destroy_test_count = 0;
+
+  test_dyn_list_add(list, 1);
+  test_dyn_list_add(list, 10);
+  test_dyn_list_add(list, 100);
+  test_dyn_list_add(list, 1000);
+  test_dyn_list_clear(list, tdl_destroyer);
+  ASSERTm("destroyer method called for each element.", destroy_test_sum == 1111);
+  ASSERTm("destroyer method called only for used allocated space.", destroy_test_count == 4);
+  ASSERT(test_dyn_list_length(list) == 0);
+  ASSERT(test_dyn_list_add(list, 1) == true);
+  destroy_test_sum = 0;
+  destroy_test_count = 0;
+  PASS();
+}
+
 TEST dyn_list_grow_test() {
   tdl* list = test_dyn_list_create(10);
   ASSERT(list->private.real_size == 10);
@@ -312,6 +331,7 @@ SUITE(dynamic_list) {
   RUN_TEST(dyn_list_index_of_equal_test);
   RUN_TEST(dyn_list_contains_equal_test);
   RUN_TEST(dyn_list_remove_test);
+  RUN_TEST(dyn_list_clear_test);
   RUN_TEST(dyn_list_grow_test);
 }
 

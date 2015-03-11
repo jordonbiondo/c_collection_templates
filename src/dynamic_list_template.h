@@ -41,6 +41,7 @@ bool prefix_dyn_list_contains(struct prefix_dyn_list* list, dummy_type value);
 long prefix_dyn_list_index_of_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type));
 bool prefix_dyn_list_contains_equal(struct prefix_dyn_list* list, dummy_type value, bool(*equals)(dummy_type, dummy_type));
 dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index);
+void prefix_dyn_list_clear(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type));
 bool prefix_dyn_list_grow(struct prefix_dyn_list* list, size_t pre_allocated_size_increase);
 
 bool prefix__private_dyn_list_grow_internal(struct prefix_dyn_list* list, size_t new_size);
@@ -258,6 +259,21 @@ dummy_type prefix_dyn_list_remove(struct prefix_dyn_list* list, unsigned index) 
   }
   list->size--;
   return removed;
+}
+
+/* Emptpy out a dynamic list of all it's data
+ * @list The dynamic list to clear;
+ * @element_destroyer If not NULL, each element of list's data will be passed
+ * through this function which you can use free or otherwise cleanup each
+ * individual element before its reference is lost.
+ */
+void prefix_dyn_list_clear(struct prefix_dyn_list* list, void(*element_destroyer)(dummy_type)) {
+  if (element_destroyer) {
+    for (size_t i = 0; i < list->size; i++) {
+      element_destroyer(list->data[i]);
+    }
+  }
+  list->size = 0;
 }
 
 /* Manually increase a lists allocated capacity.
