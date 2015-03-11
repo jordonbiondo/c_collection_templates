@@ -2,11 +2,36 @@
   A collection of template style macros that can be used to define typed collections and their functions
 
   For instance, =define_dyn_list(int, cool_int)= would define functions and types for a dynamically allocated int list. All dynamic int list specific types and functions would be prefixed with cool_int.
+
 ** Currently Implemented Collections
    - Dynamic List (ArrayList)
+     #+BEGIN_SRC C
+       define_dyn_list(chosen_type, prefix)
+     #+END_SRC
    - Circular Buffer
+     #+BEGIN_SRC C
+       define_circular_buffer(chosen_type, prefix)
+     #+END_SRC
    - Linked List
+     #+BEGIN_SRC C
+       define_linked_list(chosen_type, prefix)
+     #+END_SRC
    - Hash Table
+     #+BEGIN_SRC C
+       define_hash_map(key_type, data_type, prefix, hash_fn, equals_fn)
+
+       // example usage:
+       // you must provide a hash and equallity function:
+       // defaults for char* keys are provided
+
+       define_hash_map(char*, int, my, CCT_DEFAULT_STR_HASH, CCT_DEFAULT_STR_EQ)
+
+       // a hash function has the signature:
+       // size_t function_name(key_type key)
+
+       // a equallity hash the signature
+       // bool function_name(key_type a, key_type b)
+     #+END_SRC
 ** Planned:
    - Binary Search Tree
    - Thread-safe versions of each
